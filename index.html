@@ -32,13 +32,27 @@ h1 {
   justify-content:space-between;
   align-items:center;
   flex-wrap:wrap;
+  gap:10px;
+}
+
+.left-group {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.fecha {
+  font-size:14px;
+  color:#555;
+  background:#f1f3f6;
+  padding:6px 10px;
+  border-radius:6px;
 }
 
 input {
   padding:8px;
   border-radius:6px;
   border:1px solid #ccc;
-  width:150px;
 }
 
 .stats {
@@ -97,9 +111,16 @@ td:last-child {
 <h1>Pase de Lista 2°D</h1>
 
 <div class="top">
-  <input type="text" id="search" placeholder="Buscar..." onkeyup="render()">
+
+  <div class="left-group">
+    <input type="text" id="search" placeholder="Buscar..." onkeyup="render()">
+    <div class="fecha" id="fecha"></div>
+  </div>
+
   <div class="stats" id="stats"></div>
+
   <button class="btn-main" onclick="exportCSV()">Descargar</button>
+
 </div>
 
 <table>
@@ -150,9 +171,19 @@ const listaBase = [
 "VILCHIS GUTIERREZ ABEL"
 ];
 
-const hoy = new Date().toISOString().split("T")[0];
+// Fecha formato bonito
+const hoy = new Date();
+const clave = hoy.toISOString().split("T")[0];
 
-let students = JSON.parse(localStorage.getItem(hoy)) 
+const fechaTexto = hoy.toLocaleDateString("es-MX", {
+  day:"numeric",
+  month:"long",
+  year:"numeric"
+});
+
+document.getElementById("fecha").textContent = fechaTexto;
+
+let students = JSON.parse(localStorage.getItem(clave)) 
   || listaBase.map(n => ({ name:n, status:"" }));
 
 function render(){
@@ -191,12 +222,12 @@ function render(){
 
 function marcar(i,estado){
   students[i].status = estado;
-  localStorage.setItem(hoy, JSON.stringify(students));
+  localStorage.setItem(clave, JSON.stringify(students));
   render();
 }
 
 function exportCSV(){
-  let csv = "Fecha,"+hoy+"\n\nNo,Alumno,Asistencia\n";
+  let csv = "Fecha,"+fechaTexto+"\n\nNo,Alumno,Asistencia\n";
 
   students.forEach((s,i)=>{
     let estado="";
@@ -212,7 +243,7 @@ function exportCSV(){
 
   let a = document.createElement("a");
   a.href = url;
-  a.download = `asistencia_${hoy}.csv`;
+  a.download = `asistencia_${clave}.csv`;
   a.click();
 }
 
