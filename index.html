@@ -7,65 +7,83 @@
 
 <style>
 body {
-  font-family: Arial;
-  background:#f4f6f9;
+  font-family: 'Segoe UI', Arial;
+  background:#eef1f5;
+  margin:0;
   padding:10px;
 }
 
 .container {
-  max-width:100%;
+  max-width:900px;
   margin:auto;
   background:white;
   padding:15px;
-  border-radius:10px;
+  border-radius:12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 h1 {
   text-align:center;
-  font-size: 26px;
+  font-size:22px;
+  margin-bottom:10px;
 }
 
 button {
-  padding:12px;
-  margin:5px;
-  font-size:18px;
   border:none;
-  border-radius:8px;
+  border-radius:6px;
+  padding:6px 10px;
+  font-size:14px;
+  cursor:pointer;
+}
+
+.btn-main {
+  background:#007BFF;
+  color:white;
+  margin-bottom:10px;
 }
 
 table {
   width:100%;
   border-collapse:collapse;
-  margin-top:15px;
-}
-
-th, td {
-  border:1px solid #ddd;
-  padding:12px;
-  text-align:center;
-  font-size:16px;
 }
 
 th {
   background:#007BFF;
   color:white;
-  font-size:18px;
+  font-size:14px;
+  padding:8px;
 }
 
-.present { background:#c8e6c9; }
-.tardy { background:#fff3cd; }
-.absent { background:#ffcdd2; }
+td {
+  padding:6px;
+  font-size:14px;
+  border-bottom:1px solid #eee;
+}
 
-/* Botones grandes */
+tr:hover {
+  background:#f9f9f9;
+}
+
+/* Estados */
+.present { background:#e8f5e9; }
+.tardy { background:#fff8e1; }
+.absent { background:#fdecea; }
+
+/* Botones pequeños */
 .btn-presente { background:#4CAF50; color:white; }
 .btn-retardo { background:#FFC107; }
 .btn-falta { background:#F44336; color:white; }
 
-/* Mejora en celular */
+td:last-child {
+  display:flex;
+  justify-content:center;
+  gap:5px;
+}
+
+/* Ajuste celular */
 @media (max-width:600px){
-  h1 { font-size:22px; }
-  th, td { font-size:14px; padding:10px; }
-  button { font-size:16px; padding:10px; }
+  td, th { font-size:13px; padding:5px; }
+  button { padding:5px 8px; font-size:13px; }
 }
 </style>
 
@@ -75,7 +93,7 @@ th {
 <div class="container">
 <h1>Pase de Lista 2°D</h1>
 
-<button onclick="exportCSV()">📥 Descargar Excel</button>
+<button class="btn-main" onclick="exportCSV()">📥 Descargar</button>
 
 <table>
 <thead>
