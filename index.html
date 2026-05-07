@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pase de Lista PRO</title>
+
+<style>
+body {
+  font-family: 'Segoe UI', Arial;
+  background:#eef1f5;
+  margin:0;
+  padding:10px;
+}
+
+.container {
+  max-width:900px;
+  margin:auto;
+  background:white;
+  padding:15px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align:center;
+  font-size:22px;
+}
+
+.top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+input {
+  padding:8px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  width:150px;
+}
+
+.stats {
+  font-size:13px;
+}
+
+button {
+  border:none;
+  border-radius:6px;
+  padding:6px 10px;
+  cursor:pointer;
+}
+
+.btn-main { background:#007BFF; color:white; }
+
+table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+th {
+  background:#007BFF;
+  color:white;
+  padding:8px;
+  font-size:14px;
+}
+
+td {
+  padding:6px;
+  border-bottom:1px solid #eee;
+  font-size:14px;
+}
+
+td:last-child {
+  display:flex;
+  justify-content:center;
+  gap:5px;
+}
+
+.present { background:#e8f5e9; }
+.tardy { background:#fff8e1; }
+.absent { background:#fdecea; }
+
+.btn-presente { background:#4CAF50; color:white; }
+.btn-retardo { background:#FFC107; }
+.btn-falta { background:#F44336; color:white; }
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Pase de Lista 2°D</h1>
+
+<div class="top">
+  <input type="text" id="search" placeholder="Buscar..." onkeyup="render()">
+  <div class="stats" id="stats"></div>
+  <button class="btn-main" onclick="exportCSV()">Descargar</button>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Alumno</th>
+<th>Asistencia</th>
+</tr>
+</thead>
+<tbody id="tabla"></tbody>
+</table>
+
+</div>
+
+<script>
+
+const listaBase = [
+"CALIXTO GARCIA VICENTE AARON",
+"CAMPOS SANCHEZ AXEL UZIEL",
+"CASIMIRO GALVES ALEXIS",
+"CASTAÑO IGNACIO DYLAN DAVID",
+"CRISTOBAL HERNANDEZ GERARDO",
+"HERNANDEZ GARCIA TOMAS ALEXANDER",
+"HERNANDEZ GUTIERREZ LUIS AXAEL",
+"HERNANDEZ MAYO ALMA GLORIA",
+"JULIAN ESQUIVEL EMMANUEL",
+"LOPEZ MAYA SANTIAGO SEBASTIAN",
+"MARTINEZ CIRILO ABRIL",
+"MARTINEZ INIESTRA KEBIN ALAN",
+"MARTINEZ ROSAS IRENE ABIGAIL",
+"MARTINEZ TROCHE YAMILETH ZAYURY",
+"MENDOZA SANCHEZ JOCELYN MONTSERRAT",
+"MILLAN FRIAS AMERICA SHERLYN",
+"NAVA GARCIA TANIA",
+"NERI FLORES ALEXANDER",
+"OSORIO BELTRAN JOSE LUIS",
+"PANTALEON CARBAJAL RODRIGO",
+"PORFIRIO ENRIQUE EDUARDO",
+"PORFIRIO ENRIQUE KEVIN JONATHAN",
+"QUIROZ COLIN DALIA",
+"RAMIREZ MORENO RENATA PAULETTE",
+"ROMERO NAVA AMERICA FERNANDA",
+"ROMERO ROMERO GABRIEL",
+"SANCHEZ BERNAL WENDY DEIDAD",
+"SANCHEZ NAVA GAEL FERNANDO",
+"VAZQUEZ NAVARRO GERARDO",
+"VILCHIS GUTIERREZ ABEL"
+];
+
+const hoy = new Date().toISOString().split("T")[0];
+
+let students = JSON.parse(localStorage.getItem(hoy)) 
+  || listaBase.map(n => ({ name:n, status:"" }));
+
+function render(){
+  const tabla = document.getElementById("tabla");
+  const filtro = document.getElementById("search").value.toLowerCase();
+
+  tabla.innerHTML = "";
+
+  let p=0, r=0, f=0;
+
+  students.forEach((s,i)=>{
+    if(!s.name.toLowerCase().includes(filtro)) return;
+
+    let row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${i+1}</td>
+      <td style="text-align:left">${s.name}</td>
+      <td>
+        <button class="btn-presente" onclick="marcar(${i},'present')">✔</button>
+        <button class="btn-retardo" onclick="marcar(${i},'tardy')">⏰</button>
+        <button class="btn-falta" onclick="marcar(${i},'absent')">✘</button>
+      </td>
+    `;
+
+    if(s.status==="present"){ row.className="present"; p++; }
+    if(s.status==="tardy"){ row.className="tardy"; r++; }
+    if(s.status==="absent"){ row.className="absent"; f++; }
+
+    tabla.appendChild(row);
+  });
+
+  document.getElementById("stats").innerHTML =
+    `✔ ${p} | ⏰ ${r} | ✘ ${f}`;
+}
+
+function marcar(i,estado){
+  students[i].status = estado;
+  localStorage.setItem(hoy, JSON.stringify(students));
+  render();
+}
+
+function exportCSV(){
+  let csv = "Fecha,"+hoy+"\n\nNo,Alumno,Asistencia\n";
+
+  students.forEach((s,i)=>{
+    let estado="";
+    if(s.status==="present") estado="Presente";
+    if(s.status==="tardy") estado="Retardo";
+    if(s.status==="absent") estado="Falta";
+
+    csv += `${i+1},${s.name},${estado}\n`;
+  });
+
+  let blob = new Blob([csv], {type:"text/csv"});
+  let url = URL.createObjectURL(blob);
+
+  let a = document.createElement("a");
+  a.href = url;
+  a.download = `asistencia_${hoy}.csv`;
+  a.click();
+}
+
+render();
+
+</script>
+
+</body>
+</html>
