@@ -2,19 +2,71 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pase de Lista 2°D</title>
 
 <style>
-body { font-family: Arial; background:#f4f6f9; padding:20px; }
-.container { max-width:1000px; margin:auto; background:white; padding:20px; border-radius:10px; }
-h1 { text-align:center; }
-button { padding:8px; margin:3px; cursor:pointer; }
-table { width:100%; border-collapse:collapse; margin-top:20px; }
-th,td { border:1px solid #ddd; padding:10px; text-align:center; }
-th { background:#007BFF; color:white; }
+body {
+  font-family: Arial;
+  background:#f4f6f9;
+  padding:10px;
+}
+
+.container {
+  max-width:100%;
+  margin:auto;
+  background:white;
+  padding:15px;
+  border-radius:10px;
+}
+
+h1 {
+  text-align:center;
+  font-size: 26px;
+}
+
+button {
+  padding:12px;
+  margin:5px;
+  font-size:18px;
+  border:none;
+  border-radius:8px;
+}
+
+table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+
+th, td {
+  border:1px solid #ddd;
+  padding:12px;
+  text-align:center;
+  font-size:16px;
+}
+
+th {
+  background:#007BFF;
+  color:white;
+  font-size:18px;
+}
+
 .present { background:#c8e6c9; }
 .tardy { background:#fff3cd; }
 .absent { background:#ffcdd2; }
+
+/* Botones grandes */
+.btn-presente { background:#4CAF50; color:white; }
+.btn-retardo { background:#FFC107; }
+.btn-falta { background:#F44336; color:white; }
+
+/* Mejora en celular */
+@media (max-width:600px){
+  h1 { font-size:22px; }
+  th, td { font-size:14px; padding:10px; }
+  button { font-size:16px; padding:10px; }
+}
 </style>
 
 </head>
@@ -24,7 +76,6 @@ th { background:#007BFF; color:white; }
 <h1>Pase de Lista 2°D</h1>
 
 <button onclick="exportCSV()">📥 Descargar Excel</button>
-<button onclick="guardar()">💾 Guardar</button>
 
 <table>
 <thead>
@@ -41,7 +92,7 @@ th { background:#007BFF; color:white; }
 
 <script>
 
-let students = JSON.parse(localStorage.getItem("lista2D")) || [
+const listaBase = [
 "CALIXTO GARCIA VICENTE AARON",
 "CAMPOS SANCHEZ AXEL UZIEL",
 "CASIMIRO GALVES ALEXIS",
@@ -72,7 +123,10 @@ let students = JSON.parse(localStorage.getItem("lista2D")) || [
 "SANCHEZ NAVA GAEL FERNANDO",
 "VAZQUEZ NAVARRO GERARDO",
 "VILCHIS GUTIERREZ ABEL"
-].map(n => ({ name:n, status:"" }));
+];
+
+let students = JSON.parse(localStorage.getItem("lista2D")) 
+  || listaBase.map(n => ({ name:n, status:"" }));
 
 function render(){
   const tabla = document.getElementById("tabla");
@@ -83,11 +137,11 @@ function render(){
 
     row.innerHTML = `
       <td>${i+1}</td>
-      <td>${s.name}</td>
+      <td style="text-align:left">${s.name}</td>
       <td>
-        <button onclick="marcar(${i},'present')">✔</button>
-        <button onclick="marcar(${i},'tardy')">⏰</button>
-        <button onclick="marcar(${i},'absent')">✘</button>
+        <button class="btn-presente" onclick="marcar(${i},'present')">✔</button>
+        <button class="btn-retardo" onclick="marcar(${i},'tardy')">⏰</button>
+        <button class="btn-falta" onclick="marcar(${i},'absent')">✘</button>
       </td>
     `;
 
@@ -101,12 +155,8 @@ function render(){
 
 function marcar(i,estado){
   students[i].status = estado;
-  guardar();
-  render();
-}
-
-function guardar(){
   localStorage.setItem("lista2D", JSON.stringify(students));
+  render();
 }
 
 function exportCSV(){
@@ -127,9 +177,7 @@ function exportCSV(){
   let a = document.createElement("a");
   a.href = url;
   a.download = "asistencia_2D.csv";
-  document.body.appendChild(a);
   a.click();
-  document.body.removeChild(a);
 }
 
 render();
