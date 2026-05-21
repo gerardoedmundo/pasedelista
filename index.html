@@ -67,6 +67,8 @@ button {
 }
 
 .btn-main { background:#007BFF; color:white; }
+.btn-green { background:#28a745; color:white; }
+.btn-gray { background:#6c757d; color:white; }
 
 .btn-presente { background:#4CAF50; color:white; }
 .btn-retardo { background:#FFC107; }
@@ -120,6 +122,8 @@ td:last-child {
 
   <div class="stats" id="stats"></div>
 
+  <button class="btn-green" onclick="agregarAlumno()">➕ Alumno</button>
+  <button class="btn-gray" onclick="verPapelera()">♻️ Papelera</button>
   <button class="btn-main" onclick="exportCSV()">Descargar</button>
 
 </div>
@@ -172,7 +176,6 @@ const listaBase = [
 "VILCHIS GUTIERREZ ABEL"
 ];
 
-// Fecha formato bonito
 const hoy = new Date();
 const clave = hoy.toISOString().split("T")[0];
 
@@ -184,8 +187,17 @@ const fechaTexto = hoy.toLocaleDateString("es-MX", {
 
 document.getElementById("fecha").textContent = fechaTexto;
 
+// datos principales
 let students = JSON.parse(localStorage.getItem(clave)) 
   || listaBase.map(n => ({ name:n, status:"" }));
+
+// papelera
+let trash = JSON.parse(localStorage.getItem("trash")) || [];
+
+function save(){
+  localStorage.setItem(clave, JSON.stringify(students));
+  localStorage.setItem("trash", JSON.stringify(trash));
+}
 
 function render(){
   const tabla = document.getElementById("tabla");
@@ -196,6 +208,7 @@ function render(){
   let p=0, r=0, f=0;
 
   students.forEach((s,i)=>{
+
     if(!s.name.toLowerCase().includes(filtro)) return;
 
     let row = document.createElement("tr");
@@ -224,14 +237,45 @@ function render(){
 
 function marcar(i,estado){
   students[i].status = estado;
-  localStorage.setItem(clave, JSON.stringify(students));
+  save();
   render();
 }
 
 function eliminar(i){
   if(confirm(`¿Eliminar a ${students[i].name}?`)){
+    trash.push(students[i]); // a papelera
     students.splice(i,1);
-    localStorage.setItem(clave, JSON.stringify(students));
+    save();
+    render();
+  }
+}
+
+// ➕ AGREGAR ALUMNO
+function agregarAlumno(){
+  let nombre = prompt("Nombre del nuevo alumno:");
+  if(!nombre) return;
+
+  students.push({name:nombre.toUpperCase(), status:""});
+  save();
+  render();
+}
+
+// ♻️ VER PAPELERA
+function verPapelera(){
+  if(trash.length === 0){
+    alert("Papelera vacía");
+    return;
+  }
+
+  let lista = trash.map((a,i)=>`${i+1}. ${a.name}`).join("\n");
+  let opcion = prompt("Papelera:\n\n"+lista+"\n\nEscribe número para restaurar:");
+
+  let index = parseInt(opcion)-1;
+
+  if(trash[index]){
+    students.push(trash[index]);
+    trash.splice(index,1);
+    save();
     render();
   }
 }
