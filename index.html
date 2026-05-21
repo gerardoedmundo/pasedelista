@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiniela PRO</title>
+<title>Lista de Alumnos PRO</title>
 
 <style>
 body{
@@ -30,7 +30,7 @@ border:1px solid #ccc;
 }
 
 button{
-padding:10px;
+padding:8px 12px;
 border:none;
 border-radius:10px;
 background:#b8962e;
@@ -40,7 +40,10 @@ cursor:pointer;
 .lista-item{
 display:flex;
 justify-content:space-between;
+align-items:center;
 margin-top:5px;
+padding:5px;
+border-bottom:1px solid #ddd;
 }
 </style>
 </head>
@@ -50,7 +53,7 @@ margin-top:5px;
 <div class="container">
 
 <div class="card">
-<h2>👤 Jugadores</h2>
+<h2>👤 Alumnos</h2>
 
 <div style="display:flex; gap:10px;">
 <input type="text" id="nuevoAlumno" placeholder="Agregar alumno">
@@ -59,8 +62,8 @@ margin-top:5px;
 
 <select id="listaAlumnos"></select>
 
+<h3>Lista</h3>
 <div id="listaVisual"></div>
-
 </div>
 
 <div class="card">
@@ -110,6 +113,8 @@ const alumnosBase = [
 window.onload = function(){
 
 let guardados = JSON.parse(localStorage.getItem("alumnos")) || [];
+
+// unir sin duplicar
 let todos = [...new Set([...alumnosBase, ...guardados])];
 
 localStorage.setItem("alumnos", JSON.stringify(todos));
@@ -119,13 +124,13 @@ cargarTodo();
 
 // ===== CARGAR TODO =====
 function cargarTodo(){
-cargarAlumnos();
-cargarListaVisual();
+cargarSelect();
+cargarLista();
 cargarEliminados();
 }
 
 // ===== SELECT =====
-function cargarAlumnos(){
+function cargarSelect(){
 const select = document.getElementById("listaAlumnos");
 select.innerHTML = "<option value=''>Selecciona tu nombre</option>";
 
@@ -138,20 +143,23 @@ select.add(option);
 });
 }
 
-// ===== LISTA VISUAL =====
-function cargarListaVisual(){
+// ===== LISTA =====
+function cargarLista(){
 const cont = document.getElementById("listaVisual");
 cont.innerHTML = "";
 
 let alumnos = JSON.parse(localStorage.getItem("alumnos")) || [];
 
 alumnos.forEach(nombre=>{
-cont.innerHTML += `
-<div class="lista-item">
+const div = document.createElement("div");
+div.className = "lista-item";
+
+div.innerHTML = `
 <span>${nombre}</span>
 <button onclick="eliminarAlumno('${nombre}')">❌</button>
-</div>
 `;
+
+cont.appendChild(div);
 });
 }
 
@@ -160,7 +168,10 @@ function agregarAlumno(){
 const input = document.getElementById("nuevoAlumno");
 const nombre = input.value.trim().toUpperCase();
 
-if(nombre==="") return alert("Escribe un nombre");
+if(nombre===""){
+alert("Escribe un nombre");
+return;
+}
 
 let alumnos = JSON.parse(localStorage.getItem("alumnos")) || [];
 
@@ -212,7 +223,7 @@ localStorage.setItem("eliminados", JSON.stringify(eliminados));
 cargarTodo();
 }
 
-// ===== MOSTRAR ELIMINADOS =====
+// ===== ELIMINADOS =====
 function cargarEliminados(){
 const cont = document.getElementById("eliminados");
 cont.innerHTML = "";
@@ -220,12 +231,15 @@ cont.innerHTML = "";
 let eliminados = JSON.parse(localStorage.getItem("eliminados")) || [];
 
 eliminados.forEach(nombre=>{
-cont.innerHTML += `
-<div class="lista-item">
+const div = document.createElement("div");
+div.className = "lista-item";
+
+div.innerHTML = `
 <span>${nombre}</span>
 <button onclick="recuperarAlumno('${nombre}')">♻️</button>
-</div>
 `;
+
+cont.appendChild(div);
 });
 }
 
