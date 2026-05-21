@@ -1,7 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiniela PRO</title>
 
+<style>
+body{
+font-family:Arial;
+background:linear-gradient(135deg,#d4af37,#f5d76e,#c9a227);
+padding:20px;
+}
+
+.container{max-width:900px;margin:auto;}
+
+.card{
+background:#fff;
+padding:15px;
+border-radius:15px;
+margin-bottom:15px;
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin-top:5px;
+border-radius:10px;
+border:1px solid #ccc;
+}
+
+button{
+padding:10px;
+border:none;
+border-radius:10px;
+background:#b8962e;
+cursor:pointer;
+}
+
+.lista-item{
+display:flex;
+justify-content:space-between;
+margin-top:5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+<h2>👤 Jugadores</h2>
+
+<div style="display:flex; gap:10px;">
+<input type="text" id="nuevoAlumno" placeholder="Agregar alumno">
+<button onclick="agregarAlumno()">➕</button>
+</div>
+
+<select id="listaAlumnos"></select>
+
+<div id="listaVisual"></div>
+
+</div>
+
+<div class="card">
+<h2>🗑️ Eliminados</h2>
+<div id="eliminados"></div>
+</div>
+
+</div>
+
+<script>
+
+// ===== LISTA BASE =====
+const alumnosBase = [
+"CALIXTO GARCIA VICENTE AARON",
+"CAMPOS SANCHEZ AXEL UZIEL",
+"CASIMIRO GALVES ALEXIS",
+"CASTAÑO IGNACIO DYLAN DAVID",
+"CRISTOBAL HERNANDEZ GERARDO",
+"HERNANDEZ GARCIA TOMAS ALEXANDER",
+"HERNANDEZ GUTIERREZ LUIS AXAEL",
+"HERNANDEZ MAYO ALMA GLORIA",
+"JULIAN ESQUIVEL EMMANUEL",
+"LOPEZ MAYA SANTIAGO SEBASTIAN",
+"MARTINEZ CIRILO ABRIL",
+"MARTINEZ INIESTRA KEBIN ALAN",
+"MARTINEZ ROSAS IRENE ABIGAIL",
+"MARTINEZ TROCHE YAMILETH ZAYURY",
+"MENDOZA SANCHEZ JOCELYN MONTSERRAT",
+"MILLAN FRIAS AMERICA SHERLYN",
+"NAVA GARCIA TANIA",
+"NERI FLORES ALEXANDER",
+"OSORIO BELTRAN JOSE LUIS",
+"PANTALEON CARBAJAL RODRIGO",
+"PORFIRIO ENRIQUE EDUARDO",
+"PORFIRIO ENRIQUE KEVIN JONATHAN",
+"QUIROZ COLIN DALIA",
+"RAMIREZ MORENO RENATA PAULETTE",
+"ROMERO NAVA AMERICA FERNANDA",
+"ROMERO ROMERO GABRIEL",
+"SANCHEZ BERNAL WENDY DEIDAD",
+"SANCHEZ NAVA GAEL FERNANDO",
+"VAZQUEZ NAVARRO GERARDO",
+"VILCHIS GUTIERREZ ABEL"
+];
+
+// ===== INICIO =====
+window.onload = function(){
+
+let guardados = JSON.parse(localStorage.getItem("alumnos")) || [];
+let todos = [...new Set([...alumnosBase, ...guardados])];
+
+localStorage.setItem("alumnos", JSON.stringify(todos));
+
+cargarTodo();
+};
+
+// ===== CARGAR TODO =====
+function cargarTodo(){
+cargarAlumnos();
+cargarListaVisual();
+cargarEliminados();
+}
+
+// ===== SELECT =====
 function cargarAlumnos(){
 const select = document.getElementById("listaAlumnos");
-select.innerHTML = "";
+select.innerHTML = "<option value=''>Selecciona tu nombre</option>";
 
 let alumnos = JSON.parse(localStorage.getItem("alumnos")) || [];
 
@@ -10,21 +136,100 @@ let option = document.createElement("option");
 option.text = nombre;
 select.add(option);
 });
+}
 
-// Mostrar lista editable
-const contenedor = document.createElement("div");
+// ===== LISTA VISUAL =====
+function cargarListaVisual(){
+const cont = document.getElementById("listaVisual");
+cont.innerHTML = "";
+
+let alumnos = JSON.parse(localStorage.getItem("alumnos")) || [];
 
 alumnos.forEach(nombre=>{
-contenedor.innerHTML += `
-<div style="display:flex;justify-content:space-between;margin-top:5px;">
+cont.innerHTML += `
+<div class="lista-item">
 <span>${nombre}</span>
 <button onclick="eliminarAlumno('${nombre}')">❌</button>
 </div>
 `;
 });
-
-select.parentNode.appendChild(contenedor);
-
-// cargar eliminados
-cargarEliminados();
 }
+
+// ===== AGREGAR =====
+function agregarAlumno(){
+const input = document.getElementById("nuevoAlumno");
+const nombre = input.value.trim().toUpperCase();
+
+if(nombre==="") return alert("Escribe un nombre");
+
+let alumnos = JSON.parse(localStorage.getItem("alumnos")) || [];
+
+if(alumnos.includes(nombre)){
+alert("Ya existe");
+return;
+}
+
+alumnos.push(nombre);
+localStorage.setItem("alumnos", JSON.stringify(alumnos));
+
+input.value="";
+cargarTodo();
+}
+
+// ===== ELIMINAR =====
+function eliminarAlumno(nombre){
+
+let alumnos = JSON.parse(localStorage.getItem("alumnos")) || [];
+let eliminados = JSON.parse(localStorage.getItem("eliminados")) || [];
+
+alumnos = alumnos.filter(a => a !== nombre);
+
+if(!eliminados.includes(nombre)){
+eliminados.push(nombre);
+}
+
+localStorage.setItem("alumnos", JSON.stringify(alumnos));
+localStorage.setItem("eliminados", JSON.stringify(eliminados));
+
+cargarTodo();
+}
+
+// ===== RECUPERAR =====
+function recuperarAlumno(nombre){
+
+let alumnos = JSON.parse(localStorage.getItem("alumnos")) || [];
+let eliminados = JSON.parse(localStorage.getItem("eliminados")) || [];
+
+if(!alumnos.includes(nombre)){
+alumnos.push(nombre);
+}
+
+eliminados = eliminados.filter(a => a !== nombre);
+
+localStorage.setItem("alumnos", JSON.stringify(alumnos));
+localStorage.setItem("eliminados", JSON.stringify(eliminados));
+
+cargarTodo();
+}
+
+// ===== MOSTRAR ELIMINADOS =====
+function cargarEliminados(){
+const cont = document.getElementById("eliminados");
+cont.innerHTML = "";
+
+let eliminados = JSON.parse(localStorage.getItem("eliminados")) || [];
+
+eliminados.forEach(nombre=>{
+cont.innerHTML += `
+<div class="lista-item">
+<span>${nombre}</span>
+<button onclick="recuperarAlumno('${nombre}')">♻️</button>
+</div>
+`;
+});
+}
+
+</script>
+
+</body>
+</html>
