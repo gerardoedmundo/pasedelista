@@ -36,7 +36,8 @@ select,input{
   background:rgba(255,255,255,0.08);
   padding:10px;border-radius:12px;margin:6px 0;
 }
-.h{background:#3b82f633}.m{background:#ec489933}
+.h{background:#3b82f633;text-align:center;border-radius:8px}
+.m{background:#ec489933;text-align:center;border-radius:8px}
 .present{border-left:4px solid #22c55e}
 .tardy{border-left:4px solid #f59e0b}
 .absent{border-left:4px solid #ef4444}
@@ -83,10 +84,9 @@ button{border:none;border-radius:10px;padding:6px;cursor:pointer}
 
 <script>
 
-// 🔥 TODOS LOS GRUPOS COMPLETOS
 const grupos={
 
-// 2D
+// 🔥 2D COMPLETO
 "2D_M":[
 {name:"CALIXTO GARCIA VICENTE AARON",g:"H"},
 {name:"CAMPOS SANCHEZ AXEL UZIEL",g:"H"},
@@ -120,7 +120,107 @@ const grupos={
 {name:"VILCHIS GUTIERREZ ABEL",g:"H"}
 ],
 
-// 🔥 1D VESPERTINO (YA COMPLETO Y BIEN PUESTO)
+// 🔥 1E COMPLETO
+"1E_M":[
+{name:"AGUILAR SOLARES ADRIANA",g:"M"},
+{name:"BENITEZ SANCHEZ HUGO ALEJANDRO",g:"H"},
+{name:"BERNAL MARTINEZ XIMENA",g:"M"},
+{name:"CAMPOS HERNANDEZ MONSERRAT",g:"M"},
+{name:"CARMONA CAMACHO EDWIN",g:"H"},
+{name:"CARREON GARCIA SEBASTIAN",g:"H"},
+{name:"CASTILLO GONZALEZ KENIA SARAI",g:"M"},
+{name:"COLIN HERNANDEZ JONATHAN",g:"H"},
+{name:"CORTES VALENCIA JULIETH ABIGAIL",g:"M"},
+{name:"DE JESUS NERI URIEL",g:"H"},
+{name:"ESCALANTE LEONIDES METZLI",g:"M"},
+{name:"FLORES FLORES VICTOR EDUARDO",g:"H"},
+{name:"FLORES GARCIA RODOLFO",g:"H"},
+{name:"GARCIA LOPEZ LUIS RICARDO",g:"H"},
+{name:"GARDUÑO ROSALES ALISON SAYURI",g:"M"},
+{name:"GOMEZ NOLASCO VALERIA",g:"M"},
+{name:"HERNANDEZ HERNANDEZ LIZETH VALERIA",g:"M"},
+{name:"ISLAS JUAREZ CESAR",g:"H"},
+{name:"JARDON SEPTIMO JENNIFER",g:"M"},
+{name:"LEON SANCHEZ IVAN",g:"H"},
+{name:"MEDINA CORTEZ FRANCISCO",g:"H"},
+{name:"MEDINA MARTINEZ LUIS ANGEL",g:"H"},
+{name:"MEJIA NAVA CARLOTA ALONDRA",g:"M"},
+{name:"MENDIETA GARCIA INGRID NOEMI",g:"M"},
+{name:"MIRELES MONTOR DANIEL ARTURO",g:"H"},
+{name:"MONDRAGON CRUZ VIANCA PALOMA CAZANDRA",g:"M"},
+{name:"NAVARRO ROBLES LIZZET",g:"M"},
+{name:"OYOLA ESCOBEDO JOSE JUAN",g:"H"},
+{name:"RENDON DE LA LUZ LUIS ANGEL",g:"H"},
+{name:"REYES MONTOYA MARIA JOSE",g:"M"},
+{name:"ROBLES PINEDA LUIS ANGEL",g:"H"},
+{name:"RODRIGUEZ GARCIA VALERIA GUENIEVE",g:"M"},
+{name:"ROMERO RODRIGUEZ EITAN",g:"H"},
+{name:"ROMERO SALVADOR EVELYN DENICE",g:"M"},
+{name:"ROSALES VEGA ABRIL",g:"M"},
+{name:"SALDAÑA RAMIREZ DULCE ITZEL",g:"M"},
+{name:"SALVADOR ESPINOSA AURORA DESIRE",g:"M"},
+{name:"SANCHEZ DE JESUS ZAHORY PALOMA",g:"M"},
+{name:"SANCHEZ DELGADO ALONDRA ADIRAY",g:"M"},
+{name:"SANCHEZ GONZALEZ ADAIR ERNESTO",g:"H"},
+{name:"SANCHEZ MARTINEZ DULCE MARIA",g:"M"},
+{name:"SANCHEZ MARTINEZ PAOLA DENIS",g:"M"},
+{name:"SANCHEZ NAVA GABRIELA",g:"M"},
+{name:"SILES HERNANDEZ MARIANA",g:"M"},
+{name:"UREÑA ORTEGA JOSE MIGUEL",g:"H"},
+{name:"ZUÑIGA VERDIGUEL SOFIA",g:"M"}
+],
+
+// 🔥 1D MATUTINO COMPLETO
+"1D_M":[
+{name:"BASILIO ARANA SARA MADELINE",g:"M"},
+{name:"BERNAL GARCIA ARACELI",g:"M"},
+{name:"BERNAL MARTINEZ NATALY CHANEL",g:"M"},
+{name:"BERNAL MARTINEZ URIEL",g:"H"},
+{name:"CRUZ OCAÑA YULIETH",g:"M"},
+{name:"ESCOBEDO GONZALEZ EDGAR ANGEL",g:"H"},
+{name:"FLORES DIAZ LUCERO",g:"M"},
+{name:"FLORES FELICIANO ERISBET",g:"M"},
+{name:"GARCIA GONZALEZ ANA VALERIA",g:"M"},
+{name:"GONZALEZ CRISANTO CARLA JASMIN",g:"M"},
+{name:"GONZALEZ MARTINEZ GABRIELA",g:"M"},
+{name:"HERNANDEZ HERNANDEZ NATALY AURORA",g:"M"},
+{name:"HERNANDEZ JARDINES ARIANA GUADALUPE",g:"M"},
+{name:"HERNANDEZ RENDON FERNANDA",g:"M"},
+{name:"HERNANDEZ VIDAL LUZ ADRIANA",g:"M"},
+{name:"JIMENEZ GARCIA FATIMA",g:"M"},
+{name:"JUAREZ LUJANO ANGEL",g:"H"},
+{name:"LOPEZ NAVA LILIANA",g:"M"},
+{name:"MACARIO VICTORIANO CARLOS DANIEL",g:"H"},
+{name:"MARIANO ARRIAGA MARIA GUADALUPE",g:"M"},
+{name:"MARIN URBINA OBED SANTIAGO",g:"H"},
+{name:"MARTINEZ PONCE FRANCISCO SANTIAGO",g:"H"},
+{name:"MENDOZA EVANGELISTA DYLAN",g:"H"},
+{name:"MENDOZA GARCIA PERLA RUBI",g:"M"},
+{name:"NAVA HERNANDEZ STEPHANIE",g:"M"},
+{name:"NAVA MORALES JONATHAN",g:"H"},
+{name:"NAVARRO ROMERO GABRIEL",g:"H"},
+{name:"NOLASCO GARCIA MARIA JOSE",g:"M"},
+{name:"OROZCO ESLAVA JARET ALAIN",g:"H"},
+{name:"OSORIO SALAZAR MONSERRATH",g:"M"},
+{name:"PLATA DE LA CRUZ ANAYANSI MARIEL",g:"M"},
+{name:"QUIROZ VILLANUEVA NAHOMI",g:"M"},
+{name:"RAMIREZ ARAMIL YAIR",g:"M"},
+{name:"REYES RAMIREZ GUILLERMO DE JESUS",g:"H"},
+{name:"REYES SOTELO JOSE ANTONIO",g:"H"},
+{name:"SANCHEZ CAMPOS GENESIS ALONDRA",g:"M"},
+{name:"SANCHEZ MARTINEZ JUAN CARLOS",g:"H"},
+{name:"SANCHEZ VALENCIA ALISON",g:"M"},
+{name:"SERRANO ROJAS ROGELIO ALEXANDER",g:"H"},
+{name:"SIERRA CARDENAS BRANDON",g:"H"},
+{name:"SOTO ORTIZ ALEJANDRO",g:"H"},
+{name:"VALLEJO INOCENTE DIEGO",g:"H"},
+{name:"VELAZQUEZ ARROYO SHANIA GINETTE",g:"M"},
+{name:"VELAZQUEZ GARCIA YARETZI NAHOMI",g:"M"},
+{name:"VELAZQUEZ GONZALEZ BEATRIZ",g:"M"},
+{name:"VILLA ESPIRIDION DIANA LAURA",g:"M"}
+],
+
+// 🔥 1D VESPERTINO COMPLETO
 "1D_V":[
 {name:"ALVARADO ABUNDIO JOSE ANTONIO",g:"H"},
 {name:"ANDRACA PICHARDO MARITZA",g:"M"},
@@ -220,6 +320,7 @@ function render(){
 
 function marcar(i,e){alumnos[i].status=e;render();}
 function eliminar(i){alumnos.splice(i,1);render();}
+
 function agregarAlumno(){
   let n=prompt("Nombre:");
   let g=prompt("Genero (H/M):");
@@ -227,6 +328,7 @@ function agregarAlumno(){
   alumnos.push({name:n.toUpperCase(),g:g.toUpperCase(),status:""});
   render();
 }
+
 function exportCSV(){
   let csv="No,Alumno,Genero,Estado\n";
   alumnos.forEach((a,i)=>csv+=`${i+1},${a.name},${a.g},${a.status}\n`);
