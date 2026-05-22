@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pase de Lista PRO+</title>
+<title>Sistema Escolar PRO+</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{margin:0;padding:0;box-sizing:border-box}
 
 body{
   font-family:'Segoe UI',system-ui;
@@ -15,9 +15,8 @@ body{
   padding:15px;
 }
 
-/* CONTENEDOR */
 .container{
-  max-width:900px;
+  max-width:1000px;
   margin:auto;
   padding:20px;
   border-radius:20px;
@@ -26,23 +25,18 @@ body{
   box-shadow:0 10px 40px rgba(0,0,0,0.4);
 }
 
-/* HEADER */
-.header{
-  text-align:center;
-  margin-bottom:15px;
-}
-.header h1{font-size:22px;}
+.header{text-align:center;margin-bottom:15px;}
+.header h1{font-size:24px;}
 .header p{font-size:13px;color:#cbd5e1;}
 
-/* TOP */
-.top{
+.panel{
   display:flex;
   flex-wrap:wrap;
   gap:10px;
   justify-content:space-between;
+  margin-bottom:15px;
 }
 
-/* INPUTS */
 select,input{
   padding:10px;
   border-radius:12px;
@@ -51,52 +45,32 @@ select,input{
   color:white;
 }
 
-input::placeholder{color:#cbd5e1;}
-
-/* FECHA */
-.fecha{
-  padding:6px 12px;
-  border-radius:20px;
-  background:rgba(255,255,255,0.1);
-  font-size:12px;
-}
-
-/* STATS */
-.stats{
-  display:flex;
-  gap:8px;
-}
-.stats div{
-  padding:6px 10px;
-  border-radius:10px;
-  font-size:12px;
+.card{
+  flex:1;
+  padding:10px;
+  border-radius:12px;
+  text-align:center;
   font-weight:bold;
 }
 .p{background:#22c55e33;color:#4ade80;}
 .r{background:#f59e0b33;color:#fbbf24;}
 .f{background:#ef444433;color:#f87171;}
 
-/* BOTONES */
 button{
   border:none;
   border-radius:12px;
-  padding:8px 10px;
+  padding:8px 12px;
   cursor:pointer;
-  transition:0.2s;
 }
-button:hover{transform:scale(1.05);}
 
 .btn-main{background:#6366f1;color:white;}
 .btn-green{background:#22c55e;}
-.btn-gray{background:#64748b;}
-
 .btn-presente{background:#22c55e;}
 .btn-retardo{background:#f59e0b;}
 .btn-falta{background:#ef4444;}
 .btn-eliminar{background:#94a3b8;}
 
-/* LISTA */
-tbody tr{
+.alumno{
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -106,29 +80,14 @@ tbody tr{
   margin:8px 0;
 }
 
-tbody tr:hover{
-  background:rgba(255,255,255,0.15);
-}
-
-/* NOMBRE */
-td:nth-child(2){
-  flex:1;
-  margin-left:10px;
-}
-
-/* BOTONES */
-td:last-child{
-  display:flex;
-  gap:5px;
-}
-
-/* ESTADOS */
 .present{border-left:4px solid #22c55e;}
 .tardy{border-left:4px solid #f59e0b;}
 .absent{border-left:4px solid #ef4444;}
 
+.botones{display:flex;gap:5px;}
+
 @media(max-width:600px){
-  tbody tr{flex-direction:column;align-items:flex-start;}
+  .alumno{flex-direction:column;align-items:flex-start;}
 }
 </style>
 </head>
@@ -138,178 +97,133 @@ td:last-child{
 <div class="container">
 
 <div class="header">
-  <h1 id="titulo"></h1>
-  <p>Control de asistencia escolar</p>
+<h1 id="titulo"></h1>
+<p>Sistema de asistencia escolar</p>
 </div>
 
-<div class="top">
+<div class="panel">
 
 <select id="grupo" onchange="cambiarGrupo()">
-  <option value="2D">2°D</option>
-  <option value="1D">1°D</option>
-  <option value="1E">1°E</option>
+<option value="2D_M">2°D Matutino</option>
+<option value="1E_M">1°E Matutino</option>
+<option value="1D_M">1°D Matutino</option>
+<option value="1D_V">1°D Vespertino</option>
 </select>
 
 <input type="text" id="search" placeholder="Buscar..." onkeyup="render()">
 
-<div class="fecha" id="fecha"></div>
-
-<div class="stats" id="stats"></div>
-
 <button class="btn-green" onclick="agregarAlumno()">➕</button>
-<button class="btn-gray" onclick="verPapelera()">♻️</button>
 <button class="btn-main" onclick="exportCSV()">⬇️</button>
 
 </div>
 
-<table>
-<tbody id="tabla"></tbody>
-</table>
+<div class="panel">
+<div class="card p" id="p"></div>
+<div class="card r" id="r"></div>
+<div class="card f" id="f"></div>
+</div>
+
+<div id="lista"></div>
 
 </div>
 
 <script>
 
-// 🔥 GRUPOS COMPLETOS
-const gruposBase={
-"2D":[
-"CALIXTO GARCIA VICENTE AARON","CAMPOS SANCHEZ AXEL UZIEL","CASIMIRO GALVES ALEXIS",
-"CASTAÑO IGNACIO DYLAN DAVID","CRISTOBAL HERNANDEZ GERARDO","HERNANDEZ GARCIA TOMAS ALEXANDER",
-"HERNANDEZ GUTIERREZ LUIS AXAEL","HERNANDEZ MAYO ALMA GLORIA","JULIAN ESQUIVEL EMMANUEL",
-"LOPEZ MAYA SANTIAGO SEBASTIAN","MARTINEZ CIRILO ABRIL","MARTINEZ INIESTRA KEBIN ALAN",
-"MARTINEZ ROSAS IRENE ABIGAIL","MARTINEZ TROCHE YAMILETH ZAYURY","MENDOZA SANCHEZ JOCELYN MONTSERRAT",
-"MILLAN FRIAS AMERICA SHERLYN","NAVA GARCIA TANIA","NERI FLORES ALEXANDER",
-"OSORIO BELTRAN JOSE LUIS","PANTALEON CARBAJAL RODRIGO","PORFIRIO ENRIQUE EDUARDO",
-"PORFIRIO ENRIQUE KEVIN JONATHAN","QUIROZ COLIN DALIA","RAMIREZ MORENO RENATA PAULETTE",
-"ROMERO NAVA AMERICA FERNANDA","ROMERO ROMERO GABRIEL","SANCHEZ BERNAL WENDY DEIDAD",
-"SANCHEZ NAVA GAEL FERNANDO","VAZQUEZ NAVARRO GERARDO","VILCHIS GUTIERREZ ABEL"
+// 🔥 GRUPOS ORGANIZADOS
+const grupos={
+
+// 2D MATUTINO
+"2D_M":[
+"CALIXTO GARCIA VICENTE AARON",
+"CAMPOS SANCHEZ AXEL UZIEL"
 ],
 
-"1E":[
-"AGUILAR SOLARES ADRIANA","BENITEZ SANCHEZ HUGO ALEJANDRO","BERNAL MARTINEZ XIMENA",
-"CAMPOS HERNANDEZ MONSERRAT","CARMONA CAMACHO EDWIN","CARREON GARCIA SEBASTIAN",
-"CASTILLO GONZALEZ KENIA SARAI","COLIN HERNANDEZ JONATHAN","CORTES VALENCIA JULIETH ABIGAIL",
-"DE JESUS NERI URIEL","ESCALANTE LEONIDES METZLI","FLORES FLORES VICTOR EDUARDO",
-"FLORES GARCIA RODOLFO","GARCIA LOPEZ LUIS RICARDO","GARDUÑO ROSALES ALISON SAYURI",
-"GOMEZ NOLASCO VALERIA","HERNANDEZ HERNANDEZ LIZETH VALERIA","ISLAS JUAREZ CESAR",
-"JARDON SEPTIMO JENNIFER","LEON SANCHEZ IVAN","MEDINA CORTEZ FRANCISCO",
-"MEDINA MARTINEZ LUIS ANGEL","MEJIA NAVA CARLOTA ALONDRA","MENDIETA GARCIA INGRID NOEMI",
-"MIRELES MONTOR DANIEL ARTURO","MONDRAGON CRUZ VIANCA PALOMA CAZANDRA","NAVARRO ROBLES LIZZET",
-"OYOLA ESCOBEDO JOSE JUAN","RENDON DE LA LUZ LUIS ANGEL","REYES MONTOYA MARIA JOSE",
-"ROBLES PINEDA LUIS ANGEL","RODRIGUEZ GARCIA VALERIA GUENIEVE","ROMERO RODRIGUEZ EITAN",
-"ROMERO SALVADOR EVELYN DENICE","ROSALES VEGA ABRIL","SALDAÑA RAMIREZ DULCE ITZEL",
-"SALVADOR ESPINOSA AURORA DESIRE","SANCHEZ DE JESUS ZAHORY PALOMA",
-"SANCHEZ DELGADO ALONDRA ADIRAY","SANCHEZ GONZALEZ ADAIR ERNESTO",
-"SANCHEZ MARTINEZ DULCE MARIA","SANCHEZ MARTINEZ PAOLA DENIS",
-"SANCHEZ NAVA GABRIELA","SILES HERNANDEZ MARIANA","UREÑA ORTEGA JOSE MIGUEL",
-"ZUÑIGA VERDIGUEL SOFIA"
+// 1E MATUTINO
+"1E_M":[
+"AGUILAR SOLARES ADRIANA",
+"BENITEZ SANCHEZ HUGO ALEJANDRO"
 ],
 
-"1D":[
-"ALVARADO ABUNDIO JOSE ANTONIO","ANDRACA PICHARDO MARITZA","AYALA LOPEZ ALONSO",
-"BENIGNO PORFIRIO SOFIA","BERMUDEZ CRUZ LUZ DANIELA","BERNAL SANCHEZ VALERIA",
-"CONTRERAS GONZALEZ CAROLINA JUDITH","CRUZ BERNAL ISIS ALEJANDRA",
-"CRUZ FELICIANO GETHSEMANY LEYLANY","FLORES LUGARDO VICTOR TAKESHI",
-"GARCIA FLORES ALLISON ALEJANDRA","GARDUÑO PICHARDO AIDHE",
-"GILDARDO ALAMO KEVIN EMANUEL","GONZALEZ NOLASCO ALEXIS",
-"GONZALES ROJAS GUADALUPE","GONZALEZ VILLEGAS RODRIGO",
-"HERNANDEZ CIENFUEGOS NESTOR MIGUEL","HERNANDEZ HERNANDEZ ALEX GERARDO",
-"HERNANDEZ INIESTRA JONATHAN GILBERTO","HERNANDEZ SANCHEZ MOISES",
-"INIESTRA GOMEZ ISRAEL MICHEL","LUGARDO DAVILA XIMENA AKARI",
-"MARTINEZ GALVEZ SANDRA","MARTINEZ HERNANDEZ SALOMON",
-"MEJIA MEDINA EVAN GERZHAIM","MURGUIA ARCOS IVAN ARTURO",
-"NAVA ROJAS MARIA JOSE","NAVARRO DOMINGUEZ JOSE RICARDO",
-"NAVARRO MARTINEZ OSCAR","NIETO SANCHEZ BRANDON YAEL",
-"PEREZ HERNANDEZ DIEGO","PEREZ VALENCIA ARACELI",
-"RAMIREZ TORNES CARINA","REYES ESCANDON EDWIN ISMAEL",
-"RIVERA ARZATE ALEXIA","ROBLES PONCE DULCE ESTRELLA",
-"RODRIGUEZ ROMERO HECTOR YAIR","SALOMON GARDUÑO YURITZI",
-"SANCHEZ NAVA TANIA","TELESFORO NAVARRO BRAYAN",
-"TELESFORO RUIZ ABRIL ALEXANDRA","VALDES LEONARDO GALILEA",
-"VALDES PICHARDO ELI SAID","VALENCIA NAVA EVELIN",
-"VALENCIA PIÑA IAN TADEO","VALERIANO ALCANTARA JASSIEL",
-"VAZQUEZ ROJO MIGUEL SEBASTIAN"
+// 1D MATUTINO
+"1D_M":[
+"BASILIO ARANA SARA MADELINE",
+"BERNAL GARCIA ARACELI",
+"BERNAL MARTINEZ NATALY CHANEL",
+"BERNAL MARTINEZ URIEL"
+],
+
+// 1D VESPERTINO
+"1D_V":[
+"ALVARADO ABUNDIO JOSE ANTONIO",
+"ANDRACA PICHARDO MARITZA",
+"AYALA LOPEZ ALONSO"
 ]
+
 };
 
-const hoy=new Date();
-document.getElementById("fecha").textContent=hoy.toLocaleDateString("es-MX");
-
-let grupoActual="2D";
-let students=gruposBase[grupoActual].map(n=>({name:n,status:""}));
-let trash=[];
+let grupoActual="2D_M";
+let alumnos=grupos[grupoActual].map(n=>({name:n,status:""}));
 
 function cambiarGrupo(){
   grupoActual=document.getElementById("grupo").value;
-  students=gruposBase[grupoActual].map(n=>({name:n,status:""}));
+  alumnos=grupos[grupoActual].map(n=>({name:n,status:""}));
   render();
 }
 
 function render(){
-  const tabla=document.getElementById("tabla");
-  const filtro=document.getElementById("search").value.toLowerCase();
-  tabla.innerHTML="";
+  let lista=document.getElementById("lista");
+  let filtro=document.getElementById("search").value.toLowerCase();
+  lista.innerHTML="";
   let p=0,r=0,f=0;
 
-  students.forEach((s,i)=>{
-    if(!s.name.toLowerCase().includes(filtro)) return;
+  alumnos.forEach((a,i)=>{
+    if(!a.name.toLowerCase().includes(filtro)) return;
 
-    let row=document.createElement("tr");
+    let div=document.createElement("div");
+    div.className="alumno";
 
-    row.innerHTML=`
-    <td>${i+1}</td>
-    <td>${s.name}</td>
-    <td>
+    if(a.status==="present"){div.classList.add("present");p++;}
+    if(a.status==="tardy"){div.classList.add("tardy");r++;}
+    if(a.status==="absent"){div.classList.add("absent");f++;}
+
+    div.innerHTML=`
+    <span>${a.name}</span>
+    <div class="botones">
       <button class="btn-presente" onclick="marcar(${i},'present')">✔</button>
       <button class="btn-retardo" onclick="marcar(${i},'tardy')">⏰</button>
       <button class="btn-falta" onclick="marcar(${i},'absent')">✘</button>
       <button class="btn-eliminar" onclick="eliminar(${i})">🗑️</button>
-    </td>`;
+    </div>`;
 
-    if(s.status==="present"){row.classList.add("present");p++;}
-    if(s.status==="tardy"){row.classList.add("tardy");r++;}
-    if(s.status==="absent"){row.classList.add("absent");f++;}
-
-    tabla.appendChild(row);
+    lista.appendChild(div);
   });
 
-  document.getElementById("stats").innerHTML=
-  `<div class="p">✔ ${p}</div>
-   <div class="r">⏰ ${r}</div>
-   <div class="f">✘ ${f}</div>`;
+  document.getElementById("titulo").innerText="Grupo "+grupoActual;
+  document.getElementById("p").innerText="✔ "+p;
+  document.getElementById("r").innerText="⏰ "+r;
+  document.getElementById("f").innerText="✘ "+f;
 }
 
-function marcar(i,e){students[i].status=e;render();}
-function eliminar(i){trash.push(students[i]);students.splice(i,1);render();}
+function marcar(i,e){alumnos[i].status=e;render();}
+function eliminar(i){alumnos.splice(i,1);render();}
+
 function agregarAlumno(){
   let n=prompt("Nombre:");
   if(!n)return;
-  students.push({name:n.toUpperCase(),status:""});
+  alumnos.push({name:n.toUpperCase(),status:""});
   render();
-}
-
-function verPapelera(){
-  let lista=trash.map((a,i)=>`${i+1}. ${a.name}`).join("\n");
-  let op=prompt(lista);
-  let i=parseInt(op)-1;
-  if(trash[i]){
-    students.push(trash[i]);
-    trash.splice(i,1);
-    render();
-  }
 }
 
 function exportCSV(){
   let csv="Alumno,Estado\n";
-  students.forEach(s=>csv+=`${s.name},${s.status}\n`);
+  alumnos.forEach(a=>csv+=`${a.name},${a.status}\n`);
   let blob=new Blob([csv]);
   let a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download="lista.csv";
+  a.download="asistencia.csv";
   a.click();
 }
 
-document.getElementById("titulo").textContent="Pase de Lista "+grupoActual;
 render();
 
 </script>
