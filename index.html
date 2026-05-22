@@ -7,14 +7,12 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-
 body{
   font-family:'Segoe UI',system-ui;
   background:linear-gradient(135deg,#0f172a,#1e293b);
   color:white;
   padding:15px;
 }
-
 .container{
   max-width:1000px;
   margin:auto;
@@ -22,73 +20,34 @@ body{
   border-radius:20px;
   background:rgba(255,255,255,0.05);
   backdrop-filter:blur(20px);
-  box-shadow:0 10px 40px rgba(0,0,0,0.4);
 }
-
-.header{text-align:center;margin-bottom:15px;}
-.header h1{font-size:24px;}
-.header p{font-size:13px;color:#cbd5e1;}
-
-.panel{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  justify-content:space-between;
-  margin-bottom:15px;
-}
-
+.panel{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:15px;}
 select,input{
-  padding:10px;
-  border-radius:12px;
-  border:none;
-  background:rgba(255,255,255,0.1);
-  color:white;
+  padding:10px;border-radius:12px;border:none;
+  background:rgba(255,255,255,0.1);color:white;
 }
-
-.card{
-  flex:1;
-  padding:10px;
-  border-radius:12px;
-  text-align:center;
-  font-weight:bold;
-}
-.p{background:#22c55e33;color:#4ade80;}
-.r{background:#f59e0b33;color:#fbbf24;}
-.f{background:#ef444433;color:#f87171;}
-
-button{
-  border:none;
-  border-radius:12px;
-  padding:8px 12px;
-  cursor:pointer;
-}
-
-.btn-main{background:#6366f1;color:white;}
-.btn-green{background:#22c55e;}
-.btn-presente{background:#22c55e;}
-.btn-retardo{background:#f59e0b;}
-.btn-falta{background:#ef4444;}
-.btn-eliminar{background:#94a3b8;}
+.card{flex:1;padding:10px;border-radius:12px;text-align:center;}
+.p{background:#22c55e33}.r{background:#f59e0b33}.f{background:#ef444433}
 
 .alumno{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  display:grid;
+  grid-template-columns:40px 1fr 40px auto;
+  gap:10px;
   background:rgba(255,255,255,0.08);
-  padding:12px;
-  border-radius:12px;
-  margin:8px 0;
+  padding:10px;border-radius:12px;margin:6px 0;
 }
+.h{background:#3b82f633}.m{background:#ec489933}
+.present{border-left:4px solid #22c55e}
+.tardy{border-left:4px solid #f59e0b}
+.absent{border-left:4px solid #ef4444}
 
-.present{border-left:4px solid #22c55e;}
-.tardy{border-left:4px solid #f59e0b;}
-.absent{border-left:4px solid #ef4444;}
-
-.botones{display:flex;gap:5px;}
-
-@media(max-width:600px){
-  .alumno{flex-direction:column;align-items:flex-start;}
-}
+button{border:none;border-radius:10px;padding:6px;cursor:pointer}
+.btn-presente{background:#22c55e}
+.btn-retardo{background:#f59e0b}
+.btn-falta{background:#ef4444}
+.btn-eliminar{background:#94a3b8}
+.btn-main{background:#6366f1;color:white}
+.btn-green{background:#22c55e}
 </style>
 </head>
 
@@ -96,13 +55,9 @@ button{
 
 <div class="container">
 
-<div class="header">
-<h1 id="titulo"></h1>
-<p>Sistema de asistencia escolar</p>
-</div>
+<h2 id="titulo"></h2>
 
 <div class="panel">
-
 <select id="grupo" onchange="cambiarGrupo()">
 <option value="2D_M">2°D Matutino</option>
 <option value="1E_M">1°E Matutino</option>
@@ -114,7 +69,6 @@ button{
 
 <button class="btn-green" onclick="agregarAlumno()">➕</button>
 <button class="btn-main" onclick="exportCSV()">⬇️</button>
-
 </div>
 
 <div class="panel">
@@ -132,111 +86,100 @@ button{
 // 🔥 TODOS LOS GRUPOS COMPLETOS
 const grupos={
 
-// 2D MATUTINO
+// 2D
 "2D_M":[
-"CALIXTO GARCIA VICENTE AARON","CAMPOS SANCHEZ AXEL UZIEL","CASIMIRO GALVES ALEXIS",
-"CASTAÑO IGNACIO DYLAN DAVID","CRISTOBAL HERNANDEZ GERARDO",
-"HERNANDEZ GARCIA TOMAS ALEXANDER","HERNANDEZ GUTIERREZ LUIS AXAEL",
-"HERNANDEZ MAYO ALMA GLORIA","JULIAN ESQUIVEL EMMANUEL",
-"LOPEZ MAYA SANTIAGO SEBASTIAN","MARTINEZ CIRILO ABRIL",
-"MARTINEZ INIESTRA KEBIN ALAN","MARTINEZ ROSAS IRENE ABIGAIL",
-"MARTINEZ TROCHE YAMILETH ZAYURY","MENDOZA SANCHEZ JOCELYN MONTSERRAT",
-"MILLAN FRIAS AMERICA SHERLYN","NAVA GARCIA TANIA",
-"NERI FLORES ALEXANDER","OSORIO BELTRAN JOSE LUIS",
-"PANTALEON CARBAJAL RODRIGO","PORFIRIO ENRIQUE EDUARDO",
-"PORFIRIO ENRIQUE KEVIN JONATHAN","QUIROZ COLIN DALIA",
-"RAMIREZ MORENO RENATA PAULETTE","ROMERO NAVA AMERICA FERNANDA",
-"ROMERO ROMERO GABRIEL","SANCHEZ BERNAL WENDY DEIDAD",
-"SANCHEZ NAVA GAEL FERNANDO","VAZQUEZ NAVARRO GERARDO",
-"VILCHIS GUTIERREZ ABEL"
+{name:"CALIXTO GARCIA VICENTE AARON",g:"H"},
+{name:"CAMPOS SANCHEZ AXEL UZIEL",g:"H"},
+{name:"CASIMIRO GALVES ALEXIS",g:"H"},
+{name:"CASTAÑO IGNACIO DYLAN DAVID",g:"H"},
+{name:"CRISTOBAL HERNANDEZ GERARDO",g:"H"},
+{name:"HERNANDEZ GARCIA TOMAS ALEXANDER",g:"H"},
+{name:"HERNANDEZ GUTIERREZ LUIS AXAEL",g:"H"},
+{name:"HERNANDEZ MAYO ALMA GLORIA",g:"M"},
+{name:"JULIAN ESQUIVEL EMMANUEL",g:"H"},
+{name:"LOPEZ MAYA SANTIAGO SEBASTIAN",g:"H"},
+{name:"MARTINEZ CIRILO ABRIL",g:"M"},
+{name:"MARTINEZ INIESTRA KEBIN ALAN",g:"H"},
+{name:"MARTINEZ ROSAS IRENE ABIGAIL",g:"M"},
+{name:"MARTINEZ TROCHE YAMILETH ZAYURY",g:"M"},
+{name:"MENDOZA SANCHEZ JOCELYN MONTSERRAT",g:"M"},
+{name:"MILLAN FRIAS AMERICA SHERLYN",g:"M"},
+{name:"NAVA GARCIA TANIA",g:"M"},
+{name:"NERI FLORES ALEXANDER",g:"H"},
+{name:"OSORIO BELTRAN JOSE LUIS",g:"H"},
+{name:"PANTALEON CARBAJAL RODRIGO",g:"H"},
+{name:"PORFIRIO ENRIQUE EDUARDO",g:"H"},
+{name:"PORFIRIO ENRIQUE KEVIN JONATHAN",g:"H"},
+{name:"QUIROZ COLIN DALIA",g:"M"},
+{name:"RAMIREZ MORENO RENATA PAULETTE",g:"M"},
+{name:"ROMERO NAVA AMERICA FERNANDA",g:"M"},
+{name:"ROMERO ROMERO GABRIEL",g:"H"},
+{name:"SANCHEZ BERNAL WENDY DEIDAD",g:"M"},
+{name:"SANCHEZ NAVA GAEL FERNANDO",g:"H"},
+{name:"VAZQUEZ NAVARRO GERARDO",g:"H"},
+{name:"VILCHIS GUTIERREZ ABEL",g:"H"}
 ],
 
-// 1E MATUTINO
-"1E_M":[
-"AGUILAR SOLARES ADRIANA","BENITEZ SANCHEZ HUGO ALEJANDRO","BERNAL MARTINEZ XIMENA",
-"CAMPOS HERNANDEZ MONSERRAT","CARMONA CAMACHO EDWIN","CARREON GARCIA SEBASTIAN",
-"CASTILLO GONZALEZ KENIA SARAI","COLIN HERNANDEZ JONATHAN",
-"CORTES VALENCIA JULIETH ABIGAIL","DE JESUS NERI URIEL",
-"ESCALANTE LEONIDES METZLI","FLORES FLORES VICTOR EDUARDO",
-"FLORES GARCIA RODOLFO","GARCIA LOPEZ LUIS RICARDO",
-"GARDUÑO ROSALES ALISON SAYURI","GOMEZ NOLASCO VALERIA",
-"HERNANDEZ HERNANDEZ LIZETH VALERIA","ISLAS JUAREZ CESAR",
-"JARDON SEPTIMO JENNIFER","LEON SANCHEZ IVAN",
-"MEDINA CORTEZ FRANCISCO","MEDINA MARTINEZ LUIS ANGEL",
-"MEJIA NAVA CARLOTA ALONDRA","MENDIETA GARCIA INGRID NOEMI",
-"MIRELES MONTOR DANIEL ARTURO","MONDRAGON CRUZ VIANCA PALOMA CAZANDRA",
-"NAVARRO ROBLES LIZZET","OYOLA ESCOBEDO JOSE JUAN",
-"RENDON DE LA LUZ LUIS ANGEL","REYES MONTOYA MARIA JOSE",
-"ROBLES PINEDA LUIS ANGEL","RODRIGUEZ GARCIA VALERIA GUENIEVE",
-"ROMERO RODRIGUEZ EITAN","ROMERO SALVADOR EVELYN DENICE",
-"ROSALES VEGA ABRIL","SALDAÑA RAMIREZ DULCE ITZEL",
-"SALVADOR ESPINOSA AURORA DESIRE","SANCHEZ DE JESUS ZAHORY PALOMA",
-"SANCHEZ DELGADO ALONDRA ADIRAY","SANCHEZ GONZALEZ ADAIR ERNESTO",
-"SANCHEZ MARTINEZ DULCE MARIA","SANCHEZ MARTINEZ PAOLA DENIS",
-"SANCHEZ NAVA GABRIELA","SILES HERNANDEZ MARIANA",
-"UREÑA ORTEGA JOSE MIGUEL","ZUÑIGA VERDIGUEL SOFIA"
-],
-
-// 1D MATUTINO
-"1D_M":[
-"BASILIO ARANA SARA MADELINE","BERNAL GARCIA ARACELI","BERNAL MARTINEZ NATALY CHANEL",
-"BERNAL MARTINEZ URIEL","CRUZ OCAÑA YULIETH","ESCOBEDO GONZALEZ EDGAR ANGEL",
-"FLORES DIAZ LUCERO","FLORES FELICIANO ERISBET","GARCIA GONZALEZ ANA VALERIA",
-"GONZALEZ CRISANTO CARLA JASMIN","GONZALEZ MARTINEZ GABRIELA",
-"HERNANDEZ HERNANDEZ NATALY AURORA","HERNANDEZ JARDINES ARIANA GUADALUPE",
-"HERNANDEZ RENDON FERNANDA","HERNANDEZ VIDAL LUZ ADRIANA",
-"JIMENEZ GARCIA FATIMA","JUAREZ LUJANO ANGEL","LOPEZ NAVA LILIANA",
-"MACARIO VICTORIANO CARLOS DANIEL","MARIANO ARRIAGA MARIA GUADALUPE",
-"MARIN URBINA OBED SANTIAGO","MARTINEZ PONCE FRANCISCO SANTIAGO",
-"MENDOZA EVANGELISTA DYLAN","MENDOZA GARCIA PERLA RUBI",
-"NAVA HERNANDEZ STEPHANIE","NAVA MORALES JONATHAN",
-"NAVARRO ROMERO GABRIEL","NOLASCO GARCIA MARIA JOSE",
-"OROZCO ESLAVA JARET ALAIN","OSORIO SALAZAR MONSERRATH",
-"PLATA DE LA CRUZ ANAYANSI MARIEL","QUIROZ VILLANUEVA NAHOMI",
-"RAMIREZ ARAMIL YAIR","REYES RAMIREZ GUILLERMO DE JESUS",
-"REYES SOTELO JOSE ANTONIO","SANCHEZ CAMPOS GENESIS ALONDRA",
-"SANCHEZ MARTINEZ JUAN CARLOS","SANCHEZ VALENCIA ALISON",
-"SERRANO ROJAS ROGELIO ALEXANDER","SIERRA CARDENAS BRANDON",
-"SOTO ORTIZ ALEJANDRO","VALLEJO INOCENTE DIEGO",
-"VELAZQUEZ ARROYO SHANIA GINETTE","VELAZQUEZ GARCIA YARETZI NAHOMI",
-"VELAZQUEZ GONZALEZ BEATRIZ","VILLA ESPIRIDION DIANA LAURA"
-],
-
-// 1D VESPERTINO
+// 🔥 1D VESPERTINO (YA COMPLETO Y BIEN PUESTO)
 "1D_V":[
-"ALVARADO ABUNDIO JOSE ANTONIO","ANDRACA PICHARDO MARITZA","AYALA LOPEZ ALONSO",
-"BENIGNO PORFIRIO SOFIA","BERMUDEZ CRUZ LUZ DANIELA","BERNAL SANCHEZ VALERIA",
-"CONTRERAS GONZALEZ CAROLINA JUDITH","CRUZ BERNAL ISIS ALEJANDRA",
-"CRUZ FELICIANO GETHSEMANY LEYLANY","FLORES LUGARDO VICTOR TAKESHI",
-"GARCIA FLORES ALLISON ALEJANDRA","GARDUÑO PICHARDO AIDHE",
-"GILDARDO ALAMO KEVIN EMANUEL","GONZALEZ NOLASCO ALEXIS",
-"GONZALES ROJAS GUADALUPE","GONZALEZ VILLEGAS RODRIGO",
-"HERNANDEZ CIENFUEGOS NESTOR MIGUEL","HERNANDEZ HERNANDEZ ALEX GERARDO",
-"HERNANDEZ INIESTRA JONATHAN GILBERTO","HERNANDEZ SANCHEZ MOISES",
-"INIESTRA GOMEZ ISRAEL MICHEL","LUGARDO DAVILA XIMENA AKARI",
-"MARTINEZ GALVEZ SANDRA","MARTINEZ HERNANDEZ SALOMON",
-"MEJIA MEDINA EVAN GERZHAIM","MURGUIA ARCOS IVAN ARTURO",
-"NAVA ROJAS MARIA JOSE","NAVARRO DOMINGUEZ JOSE RICARDO",
-"NAVARRO MARTINEZ OSCAR","NIETO SANCHEZ BRANDON YAEL",
-"PEREZ HERNANDEZ DIEGO","PEREZ VALENCIA ARACELI",
-"RAMIREZ TORNES CARINA","REYES ESCANDON EDWIN ISMAEL",
-"RIVERA ARZATE ALEXIA","ROBLES PONCE DULCE ESTRELLA",
-"RODRIGUEZ ROMERO HECTOR YAIR","SALOMON GARDUÑO YURITZI",
-"SANCHEZ NAVA TANIA","TELESFORO NAVARRO BRAYAN",
-"TELESFORO RUIZ ABRIL ALEXANDRA","VALDES LEONARDO GALILEA",
-"VALDES PICHARDO ELI SAID","VALENCIA NAVA EVELIN",
-"VALENCIA PIÑA IAN TADEO","VALERIANO ALCANTARA JASSIEL",
-"VAZQUEZ ROJO MIGUEL SEBASTIAN"
+{name:"ALVARADO ABUNDIO JOSE ANTONIO",g:"H"},
+{name:"ANDRACA PICHARDO MARITZA",g:"M"},
+{name:"AYALA LOPEZ ALONSO",g:"H"},
+{name:"BENIGNO PORFIRIO SOFIA",g:"M"},
+{name:"BERMUDEZ CRUZ LUZ DANIELA",g:"M"},
+{name:"BERNAL SANCHEZ VALERIA",g:"M"},
+{name:"CONTRERAS GONZALEZ CAROLINA JUDITH",g:"M"},
+{name:"CRUZ BERNAL ISIS ALEJANDRA",g:"M"},
+{name:"CRUZ FELICIANO GETHSEMANY LEYLANY",g:"M"},
+{name:"FLORES LUGARDO VICTOR TAKESHI",g:"H"},
+{name:"GARCIA FLORES ALLISON ALEJANDRA",g:"M"},
+{name:"GARDUÑO PICHARDO AIDHE",g:"M"},
+{name:"GILDARDO ALAMO KEVIN EMANUEL",g:"H"},
+{name:"GONZALEZ NOLASCO ALEXIS",g:"H"},
+{name:"GONZALES ROJAS GUADALUPE",g:"M"},
+{name:"GONZALEZ VILLEGAS RODRIGO",g:"H"},
+{name:"HERNANDEZ CIENFUEGOS NESTOR MIGUEL",g:"H"},
+{name:"HERNANDEZ HERNANDEZ ALEX GERARDO",g:"H"},
+{name:"HERNANDEZ INIESTRA JONATHAN GILBERTO",g:"H"},
+{name:"HERNANDEZ SANCHEZ MOISES",g:"H"},
+{name:"INIESTRA GOMEZ ISRAEL MICHEL",g:"H"},
+{name:"LUGARDO DAVILA XIMENA AKARI",g:"M"},
+{name:"MARTINEZ GALVEZ SANDRA",g:"M"},
+{name:"MARTINEZ HERNANDEZ SALOMON",g:"H"},
+{name:"MEJIA MEDINA EVAN GERZHAIM",g:"H"},
+{name:"MURGUIA ARCOS IVAN ARTURO",g:"H"},
+{name:"NAVA ROJAS MARIA JOSE",g:"M"},
+{name:"NAVARRO DOMINGUEZ JOSE RICARDO",g:"H"},
+{name:"NAVARRO MARTINEZ OSCAR",g:"H"},
+{name:"NIETO SANCHEZ BRANDON YAEL",g:"H"},
+{name:"PEREZ HERNANDEZ DIEGO",g:"H"},
+{name:"PEREZ VALENCIA ARACELI",g:"M"},
+{name:"RAMIREZ TORNES CARINA",g:"M"},
+{name:"REYES ESCANDON EDWIN ISMAEL",g:"H"},
+{name:"RIVERA ARZATE ALEXIA",g:"M"},
+{name:"ROBLES PONCE DULCE ESTRELLA",g:"M"},
+{name:"RODRIGUEZ ROMERO HECTOR YAIR",g:"H"},
+{name:"SALOMON GARDUÑO YURITZI",g:"M"},
+{name:"SANCHEZ NAVA TANIA",g:"M"},
+{name:"TELESFORO NAVARRO BRAYAN",g:"H"},
+{name:"TELESFORO RUIZ ABRIL ALEXANDRA",g:"M"},
+{name:"VALDES LEONARDO GALILEA",g:"M"},
+{name:"VALDES PICHARDO ELI SAID",g:"H"},
+{name:"VALENCIA NAVA EVELIN",g:"M"},
+{name:"VALENCIA PIÑA IAN TADEO",g:"H"},
+{name:"VALERIANO ALCANTARA JASSIEL",g:"H"},
+{name:"VAZQUEZ ROJO MIGUEL SEBASTIAN",g:"H"}
 ]
 
 };
 
 let grupoActual="2D_M";
-let alumnos=grupos[grupoActual].map(n=>({name:n,status:""}));
+let alumnos=[];
 
 function cambiarGrupo(){
   grupoActual=document.getElementById("grupo").value;
-  alumnos=grupos[grupoActual].map(n=>({name:n,status:""}));
+  alumnos=JSON.parse(JSON.stringify(grupos[grupoActual]));
+  alumnos.forEach(a=>a.status="");
   render();
 }
 
@@ -257,14 +200,15 @@ function render(){
     if(a.status==="absent"){div.classList.add("absent");f++;}
 
     div.innerHTML=`
-    <span>${a.name}</span>
-    <div class="botones">
+    <div>${i+1}</div>
+    <div>${a.name}</div>
+    <div class="${a.g==='H'?'h':'m'}">${a.g}</div>
+    <div>
       <button class="btn-presente" onclick="marcar(${i},'present')">✔</button>
       <button class="btn-retardo" onclick="marcar(${i},'tardy')">⏰</button>
       <button class="btn-falta" onclick="marcar(${i},'absent')">✘</button>
       <button class="btn-eliminar" onclick="eliminar(${i})">🗑️</button>
     </div>`;
-
     lista.appendChild(div);
   });
 
@@ -276,17 +220,16 @@ function render(){
 
 function marcar(i,e){alumnos[i].status=e;render();}
 function eliminar(i){alumnos.splice(i,1);render();}
-
 function agregarAlumno(){
   let n=prompt("Nombre:");
-  if(!n)return;
-  alumnos.push({name:n.toUpperCase(),status:""});
+  let g=prompt("Genero (H/M):");
+  if(!n||!g)return;
+  alumnos.push({name:n.toUpperCase(),g:g.toUpperCase(),status:""});
   render();
 }
-
 function exportCSV(){
-  let csv="Alumno,Estado\n";
-  alumnos.forEach(a=>csv+=`${a.name},${a.status}\n`);
+  let csv="No,Alumno,Genero,Estado\n";
+  alumnos.forEach((a,i)=>csv+=`${i+1},${a.name},${a.g},${a.status}\n`);
   let blob=new Blob([csv]);
   let a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
@@ -294,7 +237,7 @@ function exportCSV(){
   a.click();
 }
 
-render();
+cambiarGrupo();
 
 </script>
 
