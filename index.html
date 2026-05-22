@@ -6,99 +6,82 @@
 <title>Pase de Lista PRO+</title>
 
 <style>
+*{box-sizing:border-box}
 body {
-  font-family: 'Segoe UI', Arial;
-  background: linear-gradient(135deg,#4facfe,#00f2fe);
+  font-family: 'Segoe UI', system-ui;
+  background: linear-gradient(135deg,#667eea,#764ba2);
   margin:0;
   padding:10px;
 }
-
 .container {
   max-width:900px;
   margin:auto;
-  background:white;
-  padding:15px;
-  border-radius:15px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.2);
+  background:rgba(255,255,255,0.9);
+  backdrop-filter: blur(12px);
+  padding:18px;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
 }
-
-h1 {
-  text-align:center;
-  margin:5px 0 10px;
-}
+h1 { text-align:center; }
 
 .top {
   display:flex;
   flex-wrap:wrap;
-  justify-content:space-between;
   gap:10px;
-  align-items:center;
+  justify-content:space-between;
 }
 
-select, input {
-  padding:8px;
-  border-radius:8px;
-  border:1px solid #ccc;
+select,input {
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  background:#f1f3f7;
 }
 
 .fecha {
+  background:#eef2ff;
+  padding:6px 12px;
+  border-radius:20px;
   font-size:13px;
-  background:#f1f3f6;
-  padding:6px 10px;
-  border-radius:6px;
 }
 
-.stats {
-  font-size:13px;
+.stats span{
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:12px;
   font-weight:bold;
 }
+.p{background:#d4edda;}
+.r{background:#fff3cd;}
+.f{background:#f8d7da;}
 
 button {
   border:none;
-  border-radius:8px;
-  padding:6px 10px;
-  cursor:pointer;
-  transition:.2s;
-}
-
-button:hover { transform:scale(1.05); }
-
-.btn-main { background:#007BFF; color:white; }
-.btn-green { background:#28a745; color:white; }
-.btn-gray { background:#6c757d; color:white; }
-
-.btn-presente { background:#4CAF50; color:white; }
-.btn-retardo { background:#FFC107; }
-.btn-falta { background:#F44336; color:white; }
-.btn-eliminar { background:#9e9e9e; color:white; }
-
-table {
-  width:100%;
-  border-collapse:collapse;
-  margin-top:10px;
-}
-
-th {
-  background:#007BFF;
-  color:white;
+  border-radius:10px;
   padding:8px;
+  cursor:pointer;
+}
+.btn-main { background:#4f46e5; color:white; }
+.btn-green { background:#10b981; color:white; }
+.btn-gray { background:#6b7280; color:white; }
+
+.btn-presente { background:#22c55e; color:white; }
+.btn-retardo { background:#f59e0b; color:white; }
+.btn-falta { background:#ef4444; color:white; }
+.btn-eliminar { background:#9ca3af; color:white; }
+
+tbody tr {
+  display:grid;
+  grid-template-columns:40px 1fr auto;
+  background:white;
+  padding:10px;
+  border-radius:10px;
+  margin:8px 0;
 }
 
-td {
-  padding:6px;
-  border-bottom:1px solid #eee;
-}
-
-td:last-child {
-  display:flex;
-  justify-content:center;
-  gap:5px;
-}
-
-.present { background:#e8f5e9; }
-.tardy { background:#fff8e1; }
-.absent { background:#fdecea; }
-
+.present { border-left:5px solid #22c55e; }
+.tardy { border-left:5px solid #f59e0b; }
+.absent { border-left:5px solid #ef4444; }
 </style>
 </head>
 
@@ -106,10 +89,9 @@ td:last-child {
 
 <div class="container">
 
-<h1 id="titulo">Pase de Lista</h1>
+<h1 id="titulo"></h1>
 
 <div class="top">
-
 <select id="grupo" onchange="cambiarGrupo()">
   <option value="2D">2°D</option>
   <option value="1D">1°D</option>
@@ -120,22 +102,14 @@ td:last-child {
 
 <div class="fecha" id="fecha"></div>
 
-<div class="stats" id="stats"></div>
+<div id="stats"></div>
 
 <button class="btn-green" onclick="agregarAlumno()">➕</button>
 <button class="btn-gray" onclick="verPapelera()">♻️</button>
 <button class="btn-main" onclick="exportCSV()">⬇️</button>
-
 </div>
 
 <table>
-<thead>
-<tr>
-<th>#</th>
-<th>Alumno</th>
-<th>Asistencia</th>
-</tr>
-</thead>
 <tbody id="tabla"></tbody>
 </table>
 
@@ -143,111 +117,186 @@ td:last-child {
 
 <script>
 
-// LISTAS BASE
+// 🔥 TODOS LOS GRUPOS
 const gruposBase = {
-  "2D": [
-    "CALIXTO GARCIA VICENTE AARON",
-    "CAMPOS SANCHEZ AXEL UZIEL",
-    "CASIMIRO GALVES ALEXIS",
-    "CASTAÑO IGNACIO DYLAN DAVID",
-    "CRISTOBAL HERNANDEZ GERARDO",
-    "HERNANDEZ GARCIA TOMAS ALEXANDER",
-    "HERNANDEZ GUTIERREZ LUIS AXAEL",
-    "HERNANDEZ MAYO ALMA GLORIA",
-    "JULIAN ESQUIVEL EMMANUEL",
-    "LOPEZ MAYA SANTIAGO SEBASTIAN",
-    "MARTINEZ CIRILO ABRIL",
-    "MARTINEZ INIESTRA KEBIN ALAN",
-    "MARTINEZ ROSAS IRENE ABIGAIL",
-    "MARTINEZ TROCHE YAMILETH ZAYURY",
-    "MENDOZA SANCHEZ JOCELYN MONTSERRAT",
-    "MILLAN FRIAS AMERICA SHERLYN",
-    "NAVA GARCIA TANIA",
-    "NERI FLORES ALEXANDER",
-    "OSORIO BELTRAN JOSE LUIS",
-    "PANTALEON CARBAJAL RODRIGO",
-    "PORFIRIO ENRIQUE EDUARDO",
-    "PORFIRIO ENRIQUE KEVIN JONATHAN",
-    "QUIROZ COLIN DALIA",
-    "RAMIREZ MORENO RENATA PAULETTE",
-    "ROMERO NAVA AMERICA FERNANDA",
-    "ROMERO ROMERO GABRIEL",
-    "SANCHEZ BERNAL WENDY DEIDAD",
-    "SANCHEZ NAVA GAEL FERNANDO",
-    "VAZQUEZ NAVARRO GERARDO",
-    "VILCHIS GUTIERREZ ABEL"
-  ],
-  "1D": [],
-  "1E": []
+
+"2D":[
+"CALIXTO GARCIA VICENTE AARON",
+"CAMPOS SANCHEZ AXEL UZIEL",
+"CASIMIRO GALVES ALEXIS",
+"CASTAÑO IGNACIO DYLAN DAVID",
+"CRISTOBAL HERNANDEZ GERARDO",
+"HERNANDEZ GARCIA TOMAS ALEXANDER",
+"HERNANDEZ GUTIERREZ LUIS AXAEL",
+"HERNANDEZ MAYO ALMA GLORIA",
+"JULIAN ESQUIVEL EMMANUEL",
+"LOPEZ MAYA SANTIAGO SEBASTIAN",
+"MARTINEZ CIRILO ABRIL",
+"MARTINEZ INIESTRA KEBIN ALAN",
+"MARTINEZ ROSAS IRENE ABIGAIL",
+"MARTINEZ TROCHE YAMILETH ZAYURY",
+"MENDOZA SANCHEZ JOCELYN MONTSERRAT",
+"MILLAN FRIAS AMERICA SHERLYN",
+"NAVA GARCIA TANIA",
+"NERI FLORES ALEXANDER",
+"OSORIO BELTRAN JOSE LUIS",
+"PANTALEON CARBAJAL RODRIGO",
+"PORFIRIO ENRIQUE EDUARDO",
+"PORFIRIO ENRIQUE KEVIN JONATHAN",
+"QUIROZ COLIN DALIA",
+"RAMIREZ MORENO RENATA PAULETTE",
+"ROMERO NAVA AMERICA FERNANDA",
+"ROMERO ROMERO GABRIEL",
+"SANCHEZ BERNAL WENDY DEIDAD",
+"SANCHEZ NAVA GAEL FERNANDO",
+"VAZQUEZ NAVARRO GERARDO",
+"VILCHIS GUTIERREZ ABEL"
+],
+
+"1E":[
+"AGUILAR SOLARES ADRIANA",
+"BENITEZ SANCHEZ HUGO ALEJANDRO",
+"BERNAL MARTINEZ XIMENA",
+"CAMPOS HERNANDEZ MONSERRAT",
+"CARMONA CAMACHO EDWIN",
+"CARREON GARCIA SEBASTIAN",
+"CASTILLO GONZALEZ KENIA SARAI",
+"COLIN HERNANDEZ JONATHAN",
+"CORTES VALENCIA JULIETH ABIGAIL",
+"DE JESUS NERI URIEL",
+"ESCALANTE LEONIDES METZLI",
+"FLORES FLORES VICTOR EDUARDO",
+"FLORES GARCIA RODOLFO",
+"GARCIA LOPEZ LUIS RICARDO",
+"GARDUÑO ROSALES ALISON SAYURI",
+"GOMEZ NOLASCO VALERIA",
+"HERNANDEZ HERNANDEZ LIZETH VALERIA",
+"ISLAS JUAREZ CESAR",
+"JARDON SEPTIMO JENNIFER",
+"LEON SANCHEZ IVAN",
+"MEDINA CORTEZ FRANCISCO",
+"MEDINA MARTINEZ LUIS ANGEL",
+"MEJIA NAVA CARLOTA ALONDRA",
+"MENDIETA GARCIA INGRID NOEMI",
+"MIRELES MONTOR DANIEL ARTURO",
+"MONDRAGON CRUZ VIANCA PALOMA CAZANDRA",
+"NAVARRO ROBLES LIZZET",
+"OYOLA ESCOBEDO JOSE JUAN",
+"RENDON DE LA LUZ LUIS ANGEL",
+"REYES MONTOYA MARIA JOSE",
+"ROBLES PINEDA LUIS ANGEL",
+"RODRIGUEZ GARCIA VALERIA GUENIEVE",
+"ROMERO RODRIGUEZ EITAN",
+"ROMERO SALVADOR EVELYN DENICE",
+"ROSALES VEGA ABRIL",
+"SALDAÑA RAMIREZ DULCE ITZEL",
+"SALVADOR ESPINOSA AURORA DESIRE",
+"SANCHEZ DE JESUS ZAHORY PALOMA",
+"SANCHEZ DELGADO ALONDRA ADIRAY",
+"SANCHEZ GONZALEZ ADAIR ERNESTO",
+"SANCHEZ MARTINEZ DULCE MARIA",
+"SANCHEZ MARTINEZ PAOLA DENIS",
+"SANCHEZ NAVA GABRIELA",
+"SILES HERNANDEZ MARIANA",
+"UREÑA ORTEGA JOSE MIGUEL",
+"ZUÑIGA VERDIGUEL SOFIA"
+],
+
+"1D":[
+"ALVARADO ABUNDIO JOSE ANTONIO",
+"ANDRACA PICHARDO MARITZA",
+"AYALA LOPEZ ALONSO",
+"BENIGNO PORFIRIO SOFIA",
+"BERMUDEZ CRUZ LUZ DANIELA",
+"BERNAL SANCHEZ VALERIA",
+"CONTRERAS GONZALEZ CAROLINA JUDITH",
+"CRUZ BERNAL ISIS ALEJANDRA",
+"CRUZ FELICIANO GETHSEMANY LEYLANY",
+"FLORES LUGARDO VICTOR TAKESHI",
+"GARCIA FLORES ALLISON ALEJANDRA",
+"GARDUÑO PICHARDO AIDHE",
+"GILDARDO ALAMO KEVIN EMANUEL",
+"GONZALEZ NOLASCO ALEXIS",
+"GONZALES ROJAS GUADALUPE",
+"GONZALEZ VILLEGAS RODRIGO",
+"HERNANDEZ CIENFUEGOS NESTOR MIGUEL",
+"HERNANDEZ HERNANDEZ ALEX GERARDO",
+"HERNANDEZ INIESTRA JONATHAN GILBERTO",
+"HERNANDEZ SANCHEZ MOISES",
+"INIESTRA GOMEZ ISRAEL MICHEL",
+"LUGARDO DAVILA XIMENA AKARI",
+"MARTINEZ GALVEZ SANDRA",
+"MARTINEZ HERNANDEZ SALOMON",
+"MEJIA MEDINA EVAN GERZHAIM",
+"MURGUIA ARCOS IVAN ARTURO",
+"NAVA ROJAS MARIA JOSE",
+"NAVARRO DOMINGUEZ JOSE RICARDO",
+"NAVARRO MARTINEZ OSCAR",
+"NIETO SANCHEZ BRANDON YAEL",
+"PEREZ HERNANDEZ DIEGO",
+"PEREZ VALENCIA ARACELI",
+"RAMIREZ TORNES CARINA",
+"REYES ESCANDON EDWIN ISMAEL",
+"RIVERA ARZATE ALEXIA",
+"ROBLES PONCE DULCE ESTRELLA",
+"RODRIGUEZ ROMERO HECTOR YAIR",
+"SALOMON GARDUÑO YURITZI",
+"SANCHEZ NAVA TANIA",
+"TELESFORO NAVARRO BRAYAN",
+"TELESFORO RUIZ ABRIL ALEXANDRA",
+"VALDES LEONARDO GALILEA",
+"VALDES PICHARDO ELI SAID",
+"VALENCIA NAVA EVELIN",
+"VALENCIA PIÑA IAN TADEO",
+"VALERIANO ALCANTARA JASSIEL",
+"VAZQUEZ ROJO MIGUEL SEBASTIAN"
+]
+
 };
 
-const hoy = new Date();
-const fechaTexto = hoy.toLocaleDateString("es-MX", {
-  day:"numeric", month:"long", year:"numeric"
-});
-document.getElementById("fecha").textContent = fechaTexto;
+const hoy=new Date();
+const fechaTexto=hoy.toLocaleDateString("es-MX");
+document.getElementById("fecha").textContent=fechaTexto;
 
-let grupoActual = localStorage.getItem("grupo") || "2D";
-document.getElementById("grupo").value = grupoActual;
+let grupoActual=localStorage.getItem("grupo")||"2D";
+document.getElementById("grupo").value=grupoActual;
 
-let clave = getClave();
-let students = cargar();
-let trash = JSON.parse(localStorage.getItem("trash")) || [];
+let clave=grupoActual+"_"+hoy.toISOString().split("T")[0];
+let students=cargar();
+let trash=JSON.parse(localStorage.getItem("trash"))||[];
 
-// CLAVE POR GRUPO Y FECHA
-function getClave(){
-  return grupoActual + "_" + hoy.toISOString().split("T")[0];
-}
-
-// CARGAR DATOS
 function cargar(){
-  let data = JSON.parse(localStorage.getItem(clave));
-
+  let data=JSON.parse(localStorage.getItem(clave));
   if(data) return data;
-
-  let base = (gruposBase[grupoActual] || []).map(n=>({name:n,status:""}));
-
-  // ORDEN AUTOMÁTICO
+  let base=gruposBase[grupoActual].map(n=>({name:n,status:""}));
   base.sort((a,b)=>a.name.localeCompare(b.name));
-
   return base;
 }
 
-// GUARDAR
 function save(){
-  localStorage.setItem(clave, JSON.stringify(students));
-  localStorage.setItem("trash", JSON.stringify(trash));
+  localStorage.setItem(clave,JSON.stringify(students));
+  localStorage.setItem("trash",JSON.stringify(trash));
 }
 
-// CAMBIAR GRUPO
 function cambiarGrupo(){
-  grupoActual = document.getElementById("grupo").value;
-  localStorage.setItem("grupo", grupoActual);
-
-  clave = getClave();
-  students = cargar();
-
-  document.getElementById("titulo").textContent = "Pase de Lista " + grupoActual;
-
+  grupoActual=document.getElementById("grupo").value;
+  localStorage.setItem("grupo",grupoActual);
+  clave=grupoActual+"_"+hoy.toISOString().split("T")[0];
+  students=cargar();
   render();
 }
 
-// RENDER
 function render(){
-  const tabla = document.getElementById("tabla");
-  const filtro = document.getElementById("search").value.toLowerCase();
-
-  tabla.innerHTML = "";
-
+  const tabla=document.getElementById("tabla");
+  const filtro=document.getElementById("search").value.toLowerCase();
+  tabla.innerHTML="";
   let p=0,r=0,f=0;
 
   students.forEach((s,i)=>{
-
     if(!s.name.toLowerCase().includes(filtro)) return;
 
-    let row = document.createElement("tr");
-
-    row.innerHTML = `
+    let row=document.createElement("tr");
+    row.innerHTML=`
     <td>${i+1}</td>
     <td>${s.name}</td>
     <td>
@@ -257,85 +306,54 @@ function render(){
       <button class="btn-eliminar" onclick="eliminar(${i})">🗑️</button>
     </td>`;
 
-    if(s.status==="present"){row.className="present";p++;}
-    if(s.status==="tardy"){row.className="tardy";r++;}
-    if(s.status==="absent"){row.className="absent";f++;}
+    if(s.status==="present"){row.classList.add("present");p++;}
+    if(s.status==="tardy"){row.classList.add("tardy");r++;}
+    if(s.status==="absent"){row.classList.add("absent");f++;}
 
     tabla.appendChild(row);
   });
 
-  document.getElementById("stats").innerHTML =
-    `✔ ${p} | ⏰ ${r} | ✘ ${f}`;
+  document.getElementById("stats").innerHTML=
+  `<span class="p">✔ ${p}</span>
+   <span class="r">⏰ ${r}</span>
+   <span class="f">✘ ${f}</span>`;
 }
 
-// FUNCIONES
-function marcar(i,estado){
-  students[i].status=estado;
-  save();
-  render();
-}
-
-function eliminar(i){
-  if(confirm("¿Eliminar alumno?")){
-    trash.push(students[i]);
-    students.splice(i,1);
-    save();
-    render();
-  }
-}
+function marcar(i,e){students[i].status=e;save();render();}
+function eliminar(i){trash.push(students[i]);students.splice(i,1);save();render();}
 
 function agregarAlumno(){
-  let nombre = prompt("Nombre del alumno:");
-  if(!nombre) return;
-
-  students.push({name:nombre.toUpperCase(),status:""});
+  let n=prompt("Nombre:");
+  if(!n)return;
+  students.push({name:n.toUpperCase(),status:""});
   students.sort((a,b)=>a.name.localeCompare(b.name));
-
-  save();
-  render();
+  save();render();
 }
 
 function verPapelera(){
-  if(trash.length===0) return alert("Papelera vacía");
-
-  let lista = trash.map((a,i)=>`${i+1}. ${a.name}`).join("\n");
-  let op = prompt("Papelera:\n\n"+lista+"\n\nNúmero para restaurar:");
-
-  let i = parseInt(op)-1;
-
+  let lista=trash.map((a,i)=>`${i+1}. ${a.name}`).join("\n");
+  let op=prompt(lista);
+  let i=parseInt(op)-1;
   if(trash[i]){
     students.push(trash[i]);
     trash.splice(i,1);
-
-    students.sort((a,b)=>a.name.localeCompare(b.name));
-
-    save();
-    render();
+    save();render();
   }
 }
 
-// EXPORTAR
 function exportCSV(){
-  let csv="Grupo,"+grupoActual+"\nFecha,"+fechaTexto+"\n\nNo,Alumno,Estado\n";
-
+  let csv="Grupo,"+grupoActual+"\nFecha,"+fechaTexto+"\n\n";
   students.forEach((s,i)=>{
-    let e="";
-    if(s.status==="present") e="Presente";
-    if(s.status==="tardy") e="Retardo";
-    if(s.status==="absent") e="Falta";
-
-    csv+=`${i+1},${s.name},${e}\n`;
+    csv+=`${i+1},${s.name},${s.status}\n`;
   });
-
   let blob=new Blob([csv]);
   let a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download="lista_"+grupoActual+".csv";
+  a.download="lista.csv";
   a.click();
 }
 
-// INICIO
-document.getElementById("titulo").textContent = "Pase de Lista " + grupoActual;
+document.getElementById("titulo").textContent="Pase de Lista "+grupoActual;
 render();
 
 </script>
