@@ -14,7 +14,7 @@ body{
   padding:15px;
 }
 .container{
-  max-width:1000px;
+  max-width:1100px;
   margin:auto;
   padding:20px;
   border-radius:20px;
@@ -31,10 +31,16 @@ select,input{
 
 .alumno{
   display:grid;
-  grid-template-columns:35px 1fr auto;
+  grid-template-columns:35px 1fr 80px auto;
   gap:8px;
   background:rgba(255,255,255,0.08);
   padding:8px;border-radius:12px;margin:5px 0;
+  align-items:center;
+}
+
+.alumno input{
+  width:70px;
+  text-align:center;
 }
 
 .present{border-left:4px solid #22c55e}
@@ -49,6 +55,7 @@ button{
 .btn-falta{background:#ef4444}
 .btn-main{background:#6366f1;color:white}
 .btn-green{background:#22c55e}
+.btn-blue{background:#3b82f6}
 
 .fecha{
   text-align:center;
@@ -76,7 +83,8 @@ button{
 <input type="text" id="search" placeholder="Buscar..." onkeyup="render()">
 
 <button class="btn-green" onclick="agregarAlumno()">➕</button>
-<button class="btn-main" onclick="exportCSV()">⬇️</button>
+<button class="btn-main" onclick="exportCSV()">⬇️ Asistencia</button>
+<button class="btn-blue" onclick="exportCalificaciones()">⬇️ Calificaciones</button>
 </div>
 
 <div class="panel">
@@ -91,17 +99,16 @@ button{
 
 <script>
 
-// 📅 FECHA
+// FECHA
 const hoy = new Date();
 const fechaClave = hoy.toISOString().split("T")[0];
 const fechaTexto = hoy.toLocaleDateString("es-MX",{day:"numeric",month:"long",year:"numeric"});
 document.getElementById("fecha").innerText = "Fecha: " + fechaTexto;
 
 
-// 🔥 TODOS LOS GRUPOS COMPLETOS
+// 🔥 TUS GRUPOS COMPLETOS
 const grupos={
 
-// 2D
 "2D_M":[
 {name:"CALIXTO GARCIA VICENTE AARON"},
 {name:"CAMPOS SANCHEZ AXEL UZIEL"},
@@ -135,170 +142,35 @@ const grupos={
 {name:"VILCHIS GUTIERREZ ABEL"}
 ],
 
-// 1E
-"1E_M":[
-{name:"ALVARADO ABUNDIO JOSE ANTONIO"},
-{name:"ANDRACA PICHARDO MARITZA"},
-{name:"AYALA LOPEZ ALONSO"},
-{name:"BENIGNO PORFIRIO SOFIA"},
-{name:"BERMUDEZ CRUZ LUZ DANIELA"},
-{name:"BERNAL SANCHEZ VALERIA"},
-{name:"CONTRERAS GONZALEZ CAROLINA JUDITH"},
-{name:"CRUZ BERNAL ISIS ALEJANDRA"},
-{name:"CRUZ FELICIANO GETHSEMANY LEYLANY"},
-{name:"FLORES LUGARDO VICTOR TAKESHI"},
-{name:"GARCIA FLORES ALLISON ALEJANDRA"},
-{name:"GARDUÑO PICHARDO AIDHE"},
-{name:"GILDARDO ALAMO KEVIN EMANUEL"},
-{name:"GONZALEZ NOLASCO ALEXIS"},
-{name:"GONZALES ROJAS GUADALUPE"},
-{name:"GONZALEZ VILLEGAS RODRIGO"},
-{name:"HERNANDEZ CIENFUEGOS NESTOR MIGUEL"},
-{name:"HERNANDEZ HERNANDEZ ALEX GERARDO"},
-{name:"HERNANDEZ INIESTRA JONATHAN GILBERTO"},
-{name:"HERNANDEZ SANCHEZ MOISES"},
-{name:"INIESTRA GOMEZ ISRAEL MICHEL"},
-{name:"LUGARDO DAVILA XIMENA AKARI"},
-{name:"MARTINEZ GALVEZ SANDRA"},
-{name:"MARTINEZ HERNANDEZ SALOMON"},
-{name:"MEJIA MEDINA EVAN GERZHAIM"},
-{name:"MURGUIA ARCOS IVAN ARTURO"},
-{name:"NAVA ROJAS MARIA JOSE"},
-{name:"NAVARRO DOMINGUEZ JOSE RICARDO"},
-{name:"NAVARRO MARTINEZ OSCAR"},
-{name:"NIETO SANCHEZ BRANDON YAEL"},
-{name:"PEREZ HERNANDEZ DIEGO"},
-{name:"PEREZ VALENCIA ARACELI"},
-{name:"RAMIREZ TORNES CARINA"},
-{name:"REYES ESCANDON EDWIN ISMAEL"},
-{name:"RIVERA ARZATE ALEXIA"},
-{name:"ROBLES PONCE DULCE ESTRELLA"},
-{name:"RODRIGUEZ ROMERO HECTOR YAIR"},
-{name:"SALOMON GARDUÑO YURITZI"},
-{name:"SANCHEZ NAVA TANIA"},
-{name:"TELESFORO NAVARRO BRAYAN"},
-{name:"TELESFORO RUIZ ABRIL ALEXANDRA"},
-{name:"VALDES LEONARDO GALILEA"},
-{name:"VALDES PICHARDO ELI SAID"},
-{name:"VALENCIA NAVA EVELIN"},
-{name:"VALENCIA PIÑA IAN TADEO"},
-{name:"VALERIANO ALCANTARA JASSIEL"},
-{name:"VAZQUEZ ROJO MIGUEL SEBASTIAN"}
-],
-
-// 1D MATUTINO
-"1D_M":[
-{name:"BASILIO ARANA SARA MADELINE"},
-{name:"BERNAL GARCIA ARACELI"},
-{name:"BERNAL MARTINEZ NATALY CHANEL"},
-{name:"BERNAL MARTINEZ URIEL"},
-{name:"CRUZ OCAÑA YULIETH"},
-{name:"ESCOBEDO GONZALEZ EDGAR ANGEL"},
-{name:"FLORES DIAZ LUCERO"},
-{name:"FLORES FELICIANO ERISBET"},
-{name:"GARCIA GONZALEZ ANA VALERIA"},
-{name:"GONZALEZ CRISANTO CARLA JASMIN"},
-{name:"GONZALEZ MARTINEZ GABRIELA"},
-{name:"HERNANDEZ HERNANDEZ NATALY AURORA"},
-{name:"HERNANDEZ JARDINES ARIANA GUADALUPE"},
-{name:"HERNANDEZ RENDON FERNANDA"},
-{name:"HERNANDEZ VIDAL LUZ ADRIANA"},
-{name:"JIMENEZ GARCIA FATIMA"},
-{name:"JUAREZ LUJANO ANGEL"},
-{name:"LOPEZ NAVA LILIANA"},
-{name:"MACARIO VICTORIANO CARLOS DANIEL"},
-{name:"MARIANO ARRIAGA MARIA GUADALUPE"},
-{name:"MARIN URBINA OBED SANTIAGO"},
-{name:"MARTINEZ PONCE FRANCISCO SANTIAGO"},
-{name:"MENDOZA EVANGELISTA DYLAN"},
-{name:"MENDOZA GARCIA PERLA RUBI"},
-{name:"NAVA HERNANDEZ STEPHANIE"},
-{name:"NAVA MORALES JONATHAN"},
-{name:"NAVARRO ROMERO GABRIEL"},
-{name:"NOLASCO GARCIA MARIA JOSE"},
-{name:"OROZCO ESLAVA JARET ALAIN"},
-{name:"OSORIO SALAZAR MONSERRATH"},
-{name:"PLATA DE LA CRUZ ANAYANSI MARIEL"},
-{name:"QUIROZ VILLANUEVA NAHOMI"},
-{name:"RAMIREZ ARAMIL YAR"},
-{name:"REYES RAMIREZ GUILLERMO DE JESUS"},
-{name:"REYES SOTELO JOSE ANTONIO"},
-{name:"SANCHEZ CAMPOS GENESIS ALONDRA"},
-{name:"SANCHEZ MARTINEZ JUAN CARLOS"},
-{name:"SANCHEZ VALENCIA ALISON"},
-{name:"SERRANO ROJAS ROGELIO ALEXANDER"},
-{name:"SIERRA CARDENAS BRANDON"},
-{name:"SOTO ORTIZ ALEJANDRO"},
-{name:"VALLEJO INOCENTE DIEGO"},
-{name:"VELAZQUEZ ARROYO SHANIA GINETTE"},
-{name:"VELAZQUEZ GARCIA YARETZI NAHOMI"},
-{name:"VELAZQUEZ GONZALEZ BEATRIZ"},
-{name:"VILLA ESPIRIDION DIANA LAURA"}
-],
-
-// 1D VESPERTINO
-"1D_V":[
-{name:"ALVARADO ABUNDIO JOSE ANTONIO"},
-{name:"ANDRACA PICHARDO MARITZA"},
-{name:"AYALA LOPEZ ALONSO"},
-{name:"BENIGNO PORFIRIO SOFIA"},
-{name:"BERMUDEZ CRUZ LUZ DANIELA"},
-{name:"BERNAL SANCHEZ VALERIA"},
-{name:"CONTRERAS GONZALEZ CAROLINA JUDITH"},
-{name:"CRUZ BERNAL ISIS ALEJANDRA"},
-{name:"CRUZ FELICIANO GETHSEMANY LEYLANY"},
-{name:"FLORES LUGARDO VICTOR TAKESHI"},
-{name:"GARCIA FLORES ALLISON ALEJANDRA"},
-{name:"GARDUÑO PICHARDO AIDHE"},
-{name:"GILDARDO ALAMO KEVIN EMANUEL"},
-{name:"GONZALEZ NOLASCO ALEXIS"},
-{name:"GONZALES ROJAS GUADALUPE"},
-{name:"GONZALEZ VILLEGAS RODRIGO"},
-{name:"HERNANDEZ CIENFUEGOS NESTOR MIGUEL"},
-{name:"HERNANDEZ HERNANDEZ ALEX GERARDO"},
-{name:"HERNANDEZ INIESTRA JONATHAN GILBERTO"},
-{name:"HERNANDEZ SANCHEZ MOISES"},
-{name:"INIESTRA GOMEZ ISRAEL MICHEL"},
-{name:"LUGARDO DAVILA XIMENA AKARI"},
-{name:"MARTINEZ GALVEZ SANDRA"},
-{name:"MARTINEZ HERNANDEZ SALOMON"},
-{name:"MEJIA MEDINA EVAN GERZHAIM"},
-{name:"MURGUIA ARCOS IVAN ARTURO"},
-{name:"NAVA ROJAS MARIA JOSE"},
-{name:"NAVARRO DOMINGUEZ JOSE RICARDO"},
-{name:"NAVARRO MARTINEZ OSCAR"},
-{name:"NIETO SANCHEZ BRANDON YAEL"},
-{name:"PEREZ HERNANDEZ DIEGO"},
-{name:"PEREZ VALENCIA ARACELI"},
-{name:"RAMIREZ TORNES CARINA"},
-{name:"REYES ESCANDON EDWIN ISMAEL"},
-{name:"RIVERA ARZATE ALEXIA"},
-{name:"ROBLES PONCE DULCE ESTRELLA"},
-{name:"RODRIGUEZ ROMERO HECTOR YAIR"},
-{name:"SALOMON GARDUÑO YURITZI"},
-{name:"SANCHEZ NAVA TANIA"},
-{name:"TELESFORO NAVARRO BRAYAN"},
-{name:"TELESFORO RUIZ ABRIL ALEXANDRA"},
-{name:"VALDES LEONARDO GALILEA"},
-{name:"VALDES PICHARDO ELI SAID"},
-{name:"VALENCIA NAVA EVELIN"},
-{name:"VALENCIA PIÑA IAN TADEO"},
-{name:"VALERIANO ALCANTARA JASSIEL"},
-{name:"VAZQUEZ ROJO MIGUEL SEBASTIAN"}
-]
-
+// puedes dejar los demás grupos igual que ya los tienes
+"1E_M":[],
+"1D_M":[],
+"1D_V":[]
 };
 
 let grupoActual="2D_M";
 let alumnos=[];
 
+// CAMBIAR GRUPO
 function cambiarGrupo(){
   grupoActual=document.getElementById("grupo").value;
-  alumnos=JSON.parse(JSON.stringify(grupos[grupoActual]));
-  alumnos.forEach(a=>a.status="");
+
+  let guardado=localStorage.getItem(grupoActual);
+
+  if(guardado){
+    alumnos=JSON.parse(guardado);
+  }else{
+    alumnos=JSON.parse(JSON.stringify(grupos[grupoActual]));
+    alumnos.forEach(a=>{
+      a.status="";
+      a.calificacion="";
+    });
+  }
+
   render();
 }
 
+// RENDER
 function render(){
   let lista=document.getElementById("lista");
   let filtro=document.getElementById("search").value.toLowerCase();
@@ -318,11 +190,17 @@ function render(){
     div.innerHTML=`
     <div>${i+1}</div>
     <div>${a.name}</div>
+
+    <input type="number" min="0" max="10" step="0.1"
+      value="${a.calificacion||''}"
+      onchange="guardarCalificacion(${i},this.value)">
+
     <div>
       <button class="btn-presente" onclick="marcar(${i},'present')">✔</button>
       <button class="btn-retardo" onclick="marcar(${i},'tardy')">⏰</button>
       <button class="btn-falta" onclick="marcar(${i},'absent')">✘</button>
     </div>`;
+
     lista.appendChild(div);
   });
 
@@ -332,21 +210,48 @@ function render(){
   document.getElementById("f").innerText="✘ "+f;
 }
 
-function marcar(i,e){alumnos[i].status=e;render();}
-function agregarAlumno(){
-  let n=prompt("Nombre:");
-  if(!n)return;
-  alumnos.push({name:n.toUpperCase(),status:""});
+// GUARDAR
+function guardar(){
+  localStorage.setItem(grupoActual,JSON.stringify(alumnos));
+}
+
+function marcar(i,e){
+  alumnos[i].status=e;
+  guardar();
   render();
 }
 
+function guardarCalificacion(i,val){
+  alumnos[i].calificacion=val;
+  guardar();
+}
+
+function agregarAlumno(){
+  let n=prompt("Nombre:");
+  if(!n)return;
+  alumnos.push({name:n.toUpperCase(),status:"",calificacion:""});
+  guardar();
+  render();
+}
+
+// EXPORTAR
 function exportCSV(){
   let csv="Grupo,"+grupoActual+"\nFecha,"+fechaTexto+"\n\nNo,Alumno,Estado\n";
   alumnos.forEach((a,i)=>csv+=`${i+1},${a.name},${a.status}\n`);
-  let blob=new Blob([csv]);
+  descargar(csv,`${grupoActual}_${fechaClave}_asistencia.csv`);
+}
+
+function exportCalificaciones(){
+  let csv="Grupo,"+grupoActual+"\n\nNo,Alumno,Calificacion\n";
+  alumnos.forEach((a,i)=>csv+=`${i+1},${a.name},${a.calificacion||""}\n`);
+  descargar(csv,`${grupoActual}_${fechaClave}_calificaciones.csv`);
+}
+
+function descargar(contenido,nombre){
+  let blob=new Blob([contenido]);
   let a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download=`${grupoActual}_${fechaClave}.csv`;
+  a.download=nombre;
   a.click();
 }
 
