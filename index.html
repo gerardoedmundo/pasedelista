@@ -14,7 +14,7 @@ body{
   padding:15px;
 }
 .container{
-  max-width:1100px;
+  max-width:1000px;
   margin:auto;
   padding:20px;
   border-radius:20px;
@@ -31,37 +31,24 @@ select,input{
 
 .alumno{
   display:grid;
-  grid-template-columns:35px 1fr 80px auto;
-  gap:8px;
+  grid-template-columns:40px 1fr 40px auto;
+  gap:10px;
   background:rgba(255,255,255,0.08);
-  padding:8px;border-radius:12px;margin:5px 0;
-  align-items:center;
+  padding:10px;border-radius:12px;margin:6px 0;
 }
-
-.alumno input{
-  width:70px;
-  text-align:center;
-}
-
+.h{background:#3b82f633;text-align:center;border-radius:8px}
+.m{background:#ec489933;text-align:center;border-radius:8px}
 .present{border-left:4px solid #22c55e}
 .tardy{border-left:4px solid #f59e0b}
 .absent{border-left:4px solid #ef4444}
 
-button{
-  border:none;border-radius:8px;padding:5px;cursor:pointer;
-}
+button{border:none;border-radius:10px;padding:6px;cursor:pointer}
 .btn-presente{background:#22c55e}
 .btn-retardo{background:#f59e0b}
 .btn-falta{background:#ef4444}
+.btn-eliminar{background:#94a3b8}
 .btn-main{background:#6366f1;color:white}
 .btn-green{background:#22c55e}
-.btn-blue{background:#3b82f6}
-
-.fecha{
-  text-align:center;
-  margin-bottom:10px;
-  color:#cbd5f5;
-}
 </style>
 </head>
 
@@ -70,7 +57,6 @@ button{
 <div class="container">
 
 <h2 id="titulo"></h2>
-<div class="fecha" id="fecha"></div>
 
 <div class="panel">
 <select id="grupo" onchange="cambiarGrupo()">
@@ -83,8 +69,7 @@ button{
 <input type="text" id="search" placeholder="Buscar..." onkeyup="render()">
 
 <button class="btn-green" onclick="agregarAlumno()">➕</button>
-<button class="btn-main" onclick="exportCSV()">⬇️ Asistencia</button>
-<button class="btn-blue" onclick="exportCalificaciones()">⬇️ Calificaciones</button>
+<button class="btn-main" onclick="exportCSV()">⬇️</button>
 </div>
 
 <div class="panel">
@@ -99,78 +84,205 @@ button{
 
 <script>
 
-// FECHA
-const hoy = new Date();
-const fechaClave = hoy.toISOString().split("T")[0];
-const fechaTexto = hoy.toLocaleDateString("es-MX",{day:"numeric",month:"long",year:"numeric"});
-document.getElementById("fecha").innerText = "Fecha: " + fechaTexto;
-
-
-// 🔥 TUS GRUPOS COMPLETOS
 const grupos={
 
+// 🔥 2D COMPLETO
 "2D_M":[
-{name:"CALIXTO GARCIA VICENTE AARON"},
-{name:"CAMPOS SANCHEZ AXEL UZIEL"},
-{name:"CASIMIRO GALVES ALEXIS"},
-{name:"CASTAÑO IGNACIO DYLAN DAVID"},
-{name:"CRISTOBAL HERNANDEZ GERARDO"},
-{name:"HERNANDEZ GARCIA TOMAS ALEXANDER"},
-{name:"HERNANDEZ GUTIERREZ LUIS AXAEL"},
-{name:"HERNANDEZ MAYO ALMA GLORIA"},
-{name:"JULIAN ESQUIVEL EMMANUEL"},
-{name:"LOPEZ MAYA SANTIAGO SEBASTIAN"},
-{name:"MARTINEZ CIRILO ABRIL"},
-{name:"MARTINEZ INIESTRA KEBIN ALAN"},
-{name:"MARTINEZ ROSAS IRENE ABIGAIL"},
-{name:"MARTINEZ TROCHE YAMILETH ZAYURY"},
-{name:"MENDOZA SANCHEZ JOCELYN MONTSERRAT"},
-{name:"MILLAN FRIAS AMERICA SHERLYN"},
-{name:"NAVA GARCIA TANIA"},
-{name:"NERI FLORES ALEXANDER"},
-{name:"OSORIO BELTRAN JOSE LUIS"},
-{name:"PANTALEON CARBAJAL RODRIGO"},
-{name:"PORFIRIO ENRIQUE EDUARDO"},
-{name:"PORFIRIO ENRIQUE KEVIN JONATHAN"},
-{name:"QUIROZ COLIN DALIA"},
-{name:"RAMIREZ MORENO RENATA PAULETTE"},
-{name:"ROMERO NAVA AMERICA FERNANDA"},
-{name:"ROMERO ROMERO GABRIEL"},
-{name:"SANCHEZ BERNAL WENDY DEIDAD"},
-{name:"SANCHEZ NAVA GAEL FERNANDO"},
-{name:"VAZQUEZ NAVARRO GERARDO"},
-{name:"VILCHIS GUTIERREZ ABEL"}
+{name:"CALIXTO GARCIA VICENTE AARON",g:"H"},
+{name:"CAMPOS SANCHEZ AXEL UZIEL",g:"H"},
+{name:"CASIMIRO GALVES ALEXIS",g:"H"},
+{name:"CASTAÑO IGNACIO DYLAN DAVID",g:"H"},
+{name:"CRISTOBAL HERNANDEZ GERARDO",g:"H"},
+{name:"HERNANDEZ GARCIA TOMAS ALEXANDER",g:"H"},
+{name:"HERNANDEZ GUTIERREZ LUIS AXAEL",g:"H"},
+{name:"HERNANDEZ MAYO ALMA GLORIA",g:"M"},
+{name:"JULIAN ESQUIVEL EMMANUEL",g:"H"},
+{name:"LOPEZ MAYA SANTIAGO SEBASTIAN",g:"H"},
+{name:"MARTINEZ CIRILO ABRIL",g:"M"},
+{name:"MARTINEZ INIESTRA KEBIN ALAN",g:"H"},
+{name:"MARTINEZ ROSAS IRENE ABIGAIL",g:"M"},
+{name:"MARTINEZ TROCHE YAMILETH ZAYURY",g:"M"},
+{name:"MENDOZA SANCHEZ JOCELYN MONTSERRAT",g:"M"},
+{name:"MILLAN FRIAS AMERICA SHERLYN",g:"M"},
+{name:"NAVA GARCIA TANIA",g:"M"},
+{name:"NERI FLORES ALEXANDER",g:"H"},
+{name:"OSORIO BELTRAN JOSE LUIS",g:"H"},
+{name:"PANTALEON CARBAJAL RODRIGO",g:"H"},
+{name:"PORFIRIO ENRIQUE EDUARDO",g:"H"},
+{name:"PORFIRIO ENRIQUE KEVIN JONATHAN",g:"H"},
+{name:"QUIROZ COLIN DALIA",g:"M"},
+{name:"RAMIREZ MORENO RENATA PAULETTE",g:"M"},
+{name:"ROMERO NAVA AMERICA FERNANDA",g:"M"},
+{name:"ROMERO ROMERO GABRIEL",g:"H"},
+{name:"SANCHEZ BERNAL WENDY DEIDAD",g:"M"},
+{name:"SANCHEZ NAVA GAEL FERNANDO",g:"H"},
+{name:"VAZQUEZ NAVARRO GERARDO",g:"H"},
+{name:"VILCHIS GUTIERREZ ABEL",g:"H"}
 ],
 
-// puedes dejar los demás grupos igual que ya los tienes
-"1E_M":[],
-"1D_M":[],
-"1D_V":[]
+// 🔥 1E COMPLETO
+"1E_M":[
+{name:"AGUILAR SOLARES ADRIANA",g:"M"},
+{name:"BENITEZ SANCHEZ HUGO ALEJANDRO",g:"H"},
+{name:"BERNAL MARTINEZ XIMENA",g:"M"},
+{name:"CAMPOS HERNANDEZ MONSERRAT",g:"M"},
+{name:"CARMONA CAMACHO EDWIN",g:"H"},
+{name:"CARREON GARCIA SEBASTIAN",g:"H"},
+{name:"CASTILLO GONZALEZ KENIA SARAI",g:"M"},
+{name:"COLIN HERNANDEZ JONATHAN",g:"H"},
+{name:"CORTES VALENCIA JULIETH ABIGAIL",g:"M"},
+{name:"DE JESUS NERI URIEL",g:"H"},
+{name:"ESCALANTE LEONIDES METZLI",g:"M"},
+{name:"FLORES FLORES VICTOR EDUARDO",g:"H"},
+{name:"FLORES GARCIA RODOLFO",g:"H"},
+{name:"GARCIA LOPEZ LUIS RICARDO",g:"H"},
+{name:"GARDUÑO ROSALES ALISON SAYURI",g:"M"},
+{name:"GOMEZ NOLASCO VALERIA",g:"M"},
+{name:"HERNANDEZ HERNANDEZ LIZETH VALERIA",g:"M"},
+{name:"ISLAS JUAREZ CESAR",g:"H"},
+{name:"JARDON SEPTIMO JENNIFER",g:"M"},
+{name:"LEON SANCHEZ IVAN",g:"H"},
+{name:"MEDINA CORTEZ FRANCISCO",g:"H"},
+{name:"MEDINA MARTINEZ LUIS ANGEL",g:"H"},
+{name:"MEJIA NAVA CARLOTA ALONDRA",g:"M"},
+{name:"MENDIETA GARCIA INGRID NOEMI",g:"M"},
+{name:"MIRELES MONTOR DANIEL ARTURO",g:"H"},
+{name:"MONDRAGON CRUZ VIANCA PALOMA CAZANDRA",g:"M"},
+{name:"NAVARRO ROBLES LIZZET",g:"M"},
+{name:"OYOLA ESCOBEDO JOSE JUAN",g:"H"},
+{name:"RENDON DE LA LUZ LUIS ANGEL",g:"H"},
+{name:"REYES MONTOYA MARIA JOSE",g:"M"},
+{name:"ROBLES PINEDA LUIS ANGEL",g:"H"},
+{name:"RODRIGUEZ GARCIA VALERIA GUENIEVE",g:"M"},
+{name:"ROMERO RODRIGUEZ EITAN",g:"H"},
+{name:"ROMERO SALVADOR EVELYN DENICE",g:"M"},
+{name:"ROSALES VEGA ABRIL",g:"M"},
+{name:"SALDAÑA RAMIREZ DULCE ITZEL",g:"M"},
+{name:"SALVADOR ESPINOSA AURORA DESIRE",g:"M"},
+{name:"SANCHEZ DE JESUS ZAHORY PALOMA",g:"M"},
+{name:"SANCHEZ DELGADO ALONDRA ADIRAY",g:"M"},
+{name:"SANCHEZ GONZALEZ ADAIR ERNESTO",g:"H"},
+{name:"SANCHEZ MARTINEZ DULCE MARIA",g:"M"},
+{name:"SANCHEZ MARTINEZ PAOLA DENIS",g:"M"},
+{name:"SANCHEZ NAVA GABRIELA",g:"M"},
+{name:"SILES HERNANDEZ MARIANA",g:"M"},
+{name:"UREÑA ORTEGA JOSE MIGUEL",g:"H"},
+{name:"ZUÑIGA VERDIGUEL SOFIA",g:"M"}
+],
+
+// 🔥 1D MATUTINO COMPLETO
+"1D_M":[
+{name:"BASILIO ARANA SARA MADELINE",g:"M"},
+{name:"BERNAL GARCIA ARACELI",g:"M"},
+{name:"BERNAL MARTINEZ NATALY CHANEL",g:"M"},
+{name:"BERNAL MARTINEZ URIEL",g:"H"},
+{name:"CRUZ OCAÑA YULIETH",g:"M"},
+{name:"ESCOBEDO GONZALEZ EDGAR ANGEL",g:"H"},
+{name:"FLORES DIAZ LUCERO",g:"M"},
+{name:"FLORES FELICIANO ERISBET",g:"M"},
+{name:"GARCIA GONZALEZ ANA VALERIA",g:"M"},
+{name:"GONZALEZ CRISANTO CARLA JASMIN",g:"M"},
+{name:"GONZALEZ MARTINEZ GABRIELA",g:"M"},
+{name:"HERNANDEZ HERNANDEZ NATALY AURORA",g:"M"},
+{name:"HERNANDEZ JARDINES ARIANA GUADALUPE",g:"M"},
+{name:"HERNANDEZ RENDON FERNANDA",g:"M"},
+{name:"HERNANDEZ VIDAL LUZ ADRIANA",g:"M"},
+{name:"JIMENEZ GARCIA FATIMA",g:"M"},
+{name:"JUAREZ LUJANO ANGEL",g:"H"},
+{name:"LOPEZ NAVA LILIANA",g:"M"},
+{name:"MACARIO VICTORIANO CARLOS DANIEL",g:"H"},
+{name:"MARIANO ARRIAGA MARIA GUADALUPE",g:"M"},
+{name:"MARIN URBINA OBED SANTIAGO",g:"H"},
+{name:"MARTINEZ PONCE FRANCISCO SANTIAGO",g:"H"},
+{name:"MENDOZA EVANGELISTA DYLAN",g:"H"},
+{name:"MENDOZA GARCIA PERLA RUBI",g:"M"},
+{name:"NAVA HERNANDEZ STEPHANIE",g:"M"},
+{name:"NAVA MORALES JONATHAN",g:"H"},
+{name:"NAVARRO ROMERO GABRIEL",g:"H"},
+{name:"NOLASCO GARCIA MARIA JOSE",g:"M"},
+{name:"OROZCO ESLAVA JARET ALAIN",g:"H"},
+{name:"OSORIO SALAZAR MONSERRATH",g:"M"},
+{name:"PLATA DE LA CRUZ ANAYANSI MARIEL",g:"M"},
+{name:"QUIROZ VILLANUEVA NAHOMI",g:"M"},
+{name:"RAMIREZ ARAMIL YAIR",g:"M"},
+{name:"REYES RAMIREZ GUILLERMO DE JESUS",g:"H"},
+{name:"REYES SOTELO JOSE ANTONIO",g:"H"},
+{name:"SANCHEZ CAMPOS GENESIS ALONDRA",g:"M"},
+{name:"SANCHEZ MARTINEZ JUAN CARLOS",g:"H"},
+{name:"SANCHEZ VALENCIA ALISON",g:"M"},
+{name:"SERRANO ROJAS ROGELIO ALEXANDER",g:"H"},
+{name:"SIERRA CARDENAS BRANDON",g:"H"},
+{name:"SOTO ORTIZ ALEJANDRO",g:"H"},
+{name:"VALLEJO INOCENTE DIEGO",g:"H"},
+{name:"VELAZQUEZ ARROYO SHANIA GINETTE",g:"M"},
+{name:"VELAZQUEZ GARCIA YARETZI NAHOMI",g:"M"},
+{name:"VELAZQUEZ GONZALEZ BEATRIZ",g:"M"},
+{name:"VILLA ESPIRIDION DIANA LAURA",g:"M"}
+],
+
+// 🔥 1D VESPERTINO COMPLETO
+"1D_V":[
+{name:"ALVARADO ABUNDIO JOSE ANTONIO",g:"H"},
+{name:"ANDRACA PICHARDO MARITZA",g:"M"},
+{name:"AYALA LOPEZ ALONSO",g:"H"},
+{name:"BENIGNO PORFIRIO SOFIA",g:"M"},
+{name:"BERMUDEZ CRUZ LUZ DANIELA",g:"M"},
+{name:"BERNAL SANCHEZ VALERIA",g:"M"},
+{name:"CONTRERAS GONZALEZ CAROLINA JUDITH",g:"M"},
+{name:"CRUZ BERNAL ISIS ALEJANDRA",g:"M"},
+{name:"CRUZ FELICIANO GETHSEMANY LEYLANY",g:"M"},
+{name:"FLORES LUGARDO VICTOR TAKESHI",g:"H"},
+{name:"GARCIA FLORES ALLISON ALEJANDRA",g:"M"},
+{name:"GARDUÑO PICHARDO AIDHE",g:"M"},
+{name:"GILDARDO ALAMO KEVIN EMANUEL",g:"H"},
+{name:"GONZALEZ NOLASCO ALEXIS",g:"H"},
+{name:"GONZALES ROJAS GUADALUPE",g:"M"},
+{name:"GONZALEZ VILLEGAS RODRIGO",g:"H"},
+{name:"HERNANDEZ CIENFUEGOS NESTOR MIGUEL",g:"H"},
+{name:"HERNANDEZ HERNANDEZ ALEX GERARDO",g:"H"},
+{name:"HERNANDEZ INIESTRA JONATHAN GILBERTO",g:"H"},
+{name:"HERNANDEZ SANCHEZ MOISES",g:"H"},
+{name:"INIESTRA GOMEZ ISRAEL MICHEL",g:"H"},
+{name:"LUGARDO DAVILA XIMENA AKARI",g:"M"},
+{name:"MARTINEZ GALVEZ SANDRA",g:"M"},
+{name:"MARTINEZ HERNANDEZ SALOMON",g:"H"},
+{name:"MEJIA MEDINA EVAN GERZHAIM",g:"H"},
+{name:"MURGUIA ARCOS IVAN ARTURO",g:"H"},
+{name:"NAVA ROJAS MARIA JOSE",g:"M"},
+{name:"NAVARRO DOMINGUEZ JOSE RICARDO",g:"H"},
+{name:"NAVARRO MARTINEZ OSCAR",g:"H"},
+{name:"NIETO SANCHEZ BRANDON YAEL",g:"H"},
+{name:"PEREZ HERNANDEZ DIEGO",g:"H"},
+{name:"PEREZ VALENCIA ARACELI",g:"M"},
+{name:"RAMIREZ TORNES CARINA",g:"M"},
+{name:"REYES ESCANDON EDWIN ISMAEL",g:"H"},
+{name:"RIVERA ARZATE ALEXIA",g:"M"},
+{name:"ROBLES PONCE DULCE ESTRELLA",g:"M"},
+{name:"RODRIGUEZ ROMERO HECTOR YAIR",g:"H"},
+{name:"SALOMON GARDUÑO YURITZI",g:"M"},
+{name:"SANCHEZ NAVA TANIA",g:"M"},
+{name:"TELESFORO NAVARRO BRAYAN",g:"H"},
+{name:"TELESFORO RUIZ ABRIL ALEXANDRA",g:"M"},
+{name:"VALDES LEONARDO GALILEA",g:"M"},
+{name:"VALDES PICHARDO ELI SAID",g:"H"},
+{name:"VALENCIA NAVA EVELIN",g:"M"},
+{name:"VALENCIA PIÑA IAN TADEO",g:"H"},
+{name:"VALERIANO ALCANTARA JASSIEL",g:"H"},
+{name:"VAZQUEZ ROJO MIGUEL SEBASTIAN",g:"H"}
+]
+
 };
 
 let grupoActual="2D_M";
 let alumnos=[];
 
-// CAMBIAR GRUPO
 function cambiarGrupo(){
   grupoActual=document.getElementById("grupo").value;
-
-  let guardado=localStorage.getItem(grupoActual);
-
-  if(guardado){
-    alumnos=JSON.parse(guardado);
-  }else{
-    alumnos=JSON.parse(JSON.stringify(grupos[grupoActual]));
-    alumnos.forEach(a=>{
-      a.status="";
-      a.calificacion="";
-    });
-  }
-
+  alumnos=JSON.parse(JSON.stringify(grupos[grupoActual]));
+  alumnos.forEach(a=>a.status="");
   render();
 }
 
-// RENDER
 function render(){
   let lista=document.getElementById("lista");
   let filtro=document.getElementById("search").value.toLowerCase();
@@ -190,17 +302,13 @@ function render(){
     div.innerHTML=`
     <div>${i+1}</div>
     <div>${a.name}</div>
-
-    <input type="number" min="0" max="10" step="0.1"
-      value="${a.calificacion||''}"
-      onchange="guardarCalificacion(${i},this.value)">
-
+    <div class="${a.g==='H'?'h':'m'}">${a.g}</div>
     <div>
       <button class="btn-presente" onclick="marcar(${i},'present')">✔</button>
       <button class="btn-retardo" onclick="marcar(${i},'tardy')">⏰</button>
       <button class="btn-falta" onclick="marcar(${i},'absent')">✘</button>
+      <button class="btn-eliminar" onclick="eliminar(${i})">🗑️</button>
     </div>`;
-
     lista.appendChild(div);
   });
 
@@ -210,48 +318,24 @@ function render(){
   document.getElementById("f").innerText="✘ "+f;
 }
 
-// GUARDAR
-function guardar(){
-  localStorage.setItem(grupoActual,JSON.stringify(alumnos));
-}
-
-function marcar(i,e){
-  alumnos[i].status=e;
-  guardar();
-  render();
-}
-
-function guardarCalificacion(i,val){
-  alumnos[i].calificacion=val;
-  guardar();
-}
+function marcar(i,e){alumnos[i].status=e;render();}
+function eliminar(i){alumnos.splice(i,1);render();}
 
 function agregarAlumno(){
   let n=prompt("Nombre:");
-  if(!n)return;
-  alumnos.push({name:n.toUpperCase(),status:"",calificacion:""});
-  guardar();
+  let g=prompt("Genero (H/M):");
+  if(!n||!g)return;
+  alumnos.push({name:n.toUpperCase(),g:g.toUpperCase(),status:""});
   render();
 }
 
-// EXPORTAR
 function exportCSV(){
-  let csv="Grupo,"+grupoActual+"\nFecha,"+fechaTexto+"\n\nNo,Alumno,Estado\n";
-  alumnos.forEach((a,i)=>csv+=`${i+1},${a.name},${a.status}\n`);
-  descargar(csv,`${grupoActual}_${fechaClave}_asistencia.csv`);
-}
-
-function exportCalificaciones(){
-  let csv="Grupo,"+grupoActual+"\n\nNo,Alumno,Calificacion\n";
-  alumnos.forEach((a,i)=>csv+=`${i+1},${a.name},${a.calificacion||""}\n`);
-  descargar(csv,`${grupoActual}_${fechaClave}_calificaciones.csv`);
-}
-
-function descargar(contenido,nombre){
-  let blob=new Blob([contenido]);
+  let csv="No,Alumno,Genero,Estado\n";
+  alumnos.forEach((a,i)=>csv+=`${i+1},${a.name},${a.g},${a.status}\n`);
+  let blob=new Blob([csv]);
   let a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download=nombre;
+  a.download="asistencia.csv";
   a.click();
 }
 
