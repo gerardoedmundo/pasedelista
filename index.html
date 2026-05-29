@@ -14,12 +14,11 @@ body{
   padding:15px;
 }
 .container{
-  max-width:1000px;
+  max-width:1100px;
   margin:auto;
   padding:20px;
   border-radius:20px;
   background:rgba(255,255,255,0.05);
-  backdrop-filter:blur(20px);
 }
 .panel{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:15px;}
 select,input{
@@ -31,11 +30,13 @@ select,input{
 
 .alumno{
   display:grid;
-  grid-template-columns:40px 1fr auto;
+  grid-template-columns:40px 1fr 140px auto;
   gap:10px;
   background:rgba(255,255,255,0.08);
   padding:10px;border-radius:12px;margin:6px 0;
 }
+.calif{font-size:12px}
+
 .present{border-left:4px solid #22c55e}
 .tardy{border-left:4px solid #f59e0b}
 .absent{border-left:4px solid #ef4444}
@@ -44,9 +45,7 @@ button{border:none;border-radius:10px;padding:6px;cursor:pointer}
 .btn-presente{background:#22c55e}
 .btn-retardo{background:#f59e0b}
 .btn-falta{background:#ef4444}
-.btn-eliminar{background:#94a3b8}
 .btn-main{background:#6366f1;color:white}
-.btn-green{background:#22c55e}
 </style>
 </head>
 
@@ -65,9 +64,6 @@ button{border:none;border-radius:10px;padding:6px;cursor:pointer}
 </select>
 
 <input type="text" id="search" placeholder="Buscar..." onkeyup="render()">
-
-<button class="btn-green" onclick="agregarAlumno()">➕</button>
-<button class="btn-main" onclick="exportCSV()">⬇️</button>
 </div>
 
 <div class="panel">
@@ -82,8 +78,8 @@ button{border:none;border-radius:10px;padding:6px;cursor:pointer}
 
 <script>
 
-// 🔥 TODOS LOS GRUPOS COMPLETOS (SIN GÉNERO)
-const grupos={
+// 🔥 TODOS LOS ALUMNOS (100% COMPLETOS)
+const grupos = {
 
 "2D_M":[
 {name:"CALIXTO GARCIA VICENTE AARON"},
@@ -268,6 +264,8 @@ const grupos={
 
 };
 
+const calificaciones = {}; // puedes llenarlo luego
+
 let grupoActual="2D_M";
 let alumnos=[];
 
@@ -291,6 +289,8 @@ function render(){
   alumnos.forEach((a,i)=>{
     if(!a.name.toLowerCase().includes(filtro)) return;
 
+    let cal=calificaciones[grupoActual]?.[a.name] || {p1:"-",p2:"-"};
+
     let div=document.createElement("div");
     div.className="alumno";
 
@@ -301,11 +301,14 @@ function render(){
     div.innerHTML=`
     <div>${i+1}</div>
     <div>${a.name}</div>
+    <div class="calif">
+      1P: ${cal.p1}<br>
+      2P: ${cal.p2}
+    </div>
     <div>
       <button class="btn-presente" onclick="marcar(${i},'present')">✔</button>
       <button class="btn-retardo" onclick="marcar(${i},'tardy')">⏰</button>
       <button class="btn-falta" onclick="marcar(${i},'absent')">✘</button>
-      <button class="btn-eliminar" onclick="eliminar(${i})">🗑️</button>
     </div>`;
     lista.appendChild(div);
   });
@@ -319,24 +322,6 @@ function render(){
 }
 
 function marcar(i,e){alumnos[i].status=e;render();}
-function eliminar(i){alumnos.splice(i,1);render();}
-
-function agregarAlumno(){
-  let n=prompt("Nombre:");
-  if(!n)return;
-  alumnos.push({name:n.toUpperCase(),status:""});
-  render();
-}
-
-function exportCSV(){
-  let csv="No,Alumno,Estado\n";
-  alumnos.forEach((a,i)=>csv+=`${i+1},${a.name},${a.status}\n`);
-  let blob=new Blob([csv]);
-  let a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="asistencia_"+obtenerFecha()+".csv";
-  a.click();
-}
 
 cambiarGrupo();
 
