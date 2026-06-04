@@ -265,10 +265,7 @@ const grupos = {
 
 // 🔥 CALIFICACIONES (si no hay → muestra "-")
 const calificaciones = {};
-const historialAsistencia = JSON.parse(
-  localStorage.getItem("historialAsistencia") || "{}"
-);
-  
+
 let grupoActual="2D_M";
 let alumnos=[];
 
@@ -324,29 +321,7 @@ function render(){
   document.getElementById("f").innerText="✘ "+f;
 }
 
-function marcar(i,e){
-
-  alumnos[i].status = e;
-
-  let fecha = obtenerFecha();
-  let alumno = alumnos[i].name;
-
-  if(!historialAsistencia[alumno]){
-    historialAsistencia[alumno] = [];
-  }
-
-  historialAsistencia[alumno].push({
-    fecha: fecha,
-    estado: e
-  });
-
-  localStorage.setItem(
-    "historialAsistencia",
-    JSON.stringify(historialAsistencia)
-  );
-
-  render();
-}
+function marcar(i,e){alumnos[i].status=e;render();}
 
 cambiarGrupo();
 
